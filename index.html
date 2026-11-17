@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f0e5">
+  <title>La Pergola | Pizzeria</title>
+  <meta name="description" content="Scopri il menù della Pizzeria La Pergola e ordina da asporto su WhatsApp.">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <a href="#" class="brand">
+      <img src="https://i.postimg.cc/BLbxBbVj/LOGO.png"
+           alt="Logo La Pergola" class="brand-symbol">
+      <img src="https://i.postimg.cc/VrvjWvV0/SCRITTA.png"
+           alt="La Pergola" class="brand-name">
+    </a>
+
+    <button id="language-toggle" class="language-toggle" type="button" aria-label="View this site in English">EN</button>
+  </header>
+
+  <main>
+
+    <section class="hero">
+      <div class="hero-content">
+        <p class="eyebrow" data-i18n="heroEyebrow">TRADIZIONE • PASSIONE • QUALITÀ</p>
+        <h1 data-i18n="heroTitle">Il gusto della tradizione.</h1>
+        <p data-i18n="heroText">Benvenuti a La Pergola. Scopri le nostre pizze,
+           le specialità della casa e tanto altro.</p>
+        <a href="#menu" class="main-button" data-i18n="discoverMenu">SCOPRI IL MENÙ</a>
+      </div>
+    </section>
+
+    <section class="story-section">
+      <p class="eyebrow" data-i18n="storyEyebrow">LA NOSTRA STORIA</p>
+      <h2 data-i18n="storyTitle">Tradizione e convivialità a Galugnano.</h2>
+      <p class="story-intro" data-i18n="storyIntro">
+        La Pergola è una storica pizzeria e trattoria a Galugnano, frazione di
+        San Donato di Lecce. È apprezzata per le pizze, le pucce e i piatti della
+        cucina tradizionale salentina. L'atmosfera informale e accogliente e i
+        posti a sedere all'interno e all'aperto la rendono adatta a cene in
+        famiglia e in compagnia. Da 40 anni accogliamo i nostri ospiti con la stessa passione per la cucina e la convivialitÃ .
+      </p>
+
+      <div class="story-details">
+        <article>
+          <h3 data-i18n="storyFoodTitle">Proposte per tutti i gusti</h3>
+          <p data-i18n="storyFoodText">Il menù comprende pizze classiche e speciali, pucce, antipasti e ricette tipiche del territorio, con opzioni vegetariane e vegane.</p>
+        </article>
+        <article>
+          <h3 data-i18n="storyServiceTitle">Cena, prenotazioni e asporto</h3>
+          <p data-i18n="storyServiceText">È disponibile il servizio al tavolo per cena e si può ordinare da asporto. Per la popolarità del locale, è consigliata la prenotazione.</p>
+        </article>
+        <article>
+          <h3 data-i18n="hoursTitle">Orari</h3>
+          <p data-i18n="hoursText">Siamo aperti dal mercoledì alla domenica, dalle 18:30 alle 23:00.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="prenotazione" class="booking-section">
+      <details class="booking-panel">
+        <summary class="booking-toggle">
+          <span class="eyebrow" data-i18n="bookingEyebrow">CLICCA E PRENOTA UN TAVOLO</span>
+          <span class="booking-toggle-icon" aria-hidden="true"></span>
+        </summary>
+        <div class="booking-content">
+          <h2 data-i18n="bookingTitle">Richiesta di prenotazione</h2>
+          <p class="booking-intro" data-i18n="bookingIntro">Compila i tuoi dati: la richiesta verrà inviata su WhatsApp e sarà confermata dal ristorante.</p>
+          <form id="booking-form">
+            <label for="booking-name" data-i18n="customerName">Nome</label>
+            <input id="booking-name" type="text" placeholder="Il tuo nome" data-i18n-placeholder="namePlaceholder" required>
+            <label for="booking-phone" data-i18n="bookingPhone">Telefono</label>
+            <input id="booking-phone" type="tel" autocomplete="tel" required>
+            <label for="booking-date" data-i18n="bookingDate">Data</label>
+            <select id="booking-date" required><option value="" data-i18n="chooseDate">Scegli una data</option></select>
+            <label for="booking-time" data-i18n="bookingTime">Orario</label>
+            <input id="booking-time" type="time" min="18:30" max="23:00" step="900" required>
+            <label for="booking-guests" data-i18n="bookingGuests">Numero di persone</label>
+            <input id="booking-guests" type="number" min="1" max="30" value="2" required>
+            <label for="booking-notes" data-i18n="orderNotes">Note aggiuntive</label>
+            <textarea id="booking-notes" placeholder="Eventuali richieste..." data-i18n-placeholder="notesPlaceholder"></textarea>
+            <button type="submit" class="whatsapp-button"><span data-i18n="bookingSubmit">INVIA RICHIESTA SU WHATSAPP</span></button>
+          </form>
+          <a id="booking-call" class="whatsapp-button call-button" href="tel:+390832655300" hidden><span data-i18n="callUs">CHIAMACI</span></a>
+        </div>
+      </details>
+    </section>
+
+    <section id="menu" class="menu-section">
+      <p class="eyebrow" data-i18n="specialties">LE NOSTRE SPECIALITÀ</p>
+      <h2 data-i18n="menuTitle">Il nostro menù</h2>
+      <p class="section-description" data-i18n="menuHint">
+        Scegli quello che preferisci e aggiungilo al carrello.
+      </p>
+
+      <div id="categories" class="categories"></div>
+
+      <div id="products" class="products">
+        <!-- I prodotti verranno caricati automaticamente -->
+      </div>
+    </section>
+
+    <section id="cart" class="cart-section">
+      <div class="cart-panel">
+        <a href="#menu" class="cart-menu-link" data-i18n="cartMenuLink">IL NOSTRO MENÙ</a>
+        <p class="eyebrow" data-i18n="yourOrder">IL TUO ORDINE</p>
+        <h2 data-i18n="cartTitle">Il carrello</h2>
+
+        <div id="cart-items">
+          <span id="cart-empty" data-i18n="cartEmpty">Il tuo carrello è vuoto.</span>
+        </div>
+
+        <div class="cart-total">
+          <span data-i18n="total">Totale</span>
+          <strong id="cart-total">€ 0,00</strong>
+        </div>
+
+        <form id="order-form">
+          <h3 data-i18n="completeOrder">Completa il tuo ordine</h3>
+
+          <label for="customer-name" data-i18n="customerName">Nome</label>
+          <input id="customer-name" type="text"
+                 placeholder="Il tuo nome" data-i18n-placeholder="namePlaceholder" required>
+
+          <label for="pickup-date" data-i18n="pickupDate">Data di ritiro</label>
+          <select id="pickup-date" required>
+            <option value="" data-i18n="chooseDate">Scegli una data</option>
+          </select>
+
+          <label for="pickup-time" data-i18n="pickupTime">Orario di ritiro (18:30–23:00)</label>
+          <input id="pickup-time" type="time" min="18:30" max="23:00" step="900" required>
+
+          <label for="order-notes" data-i18n="orderNotes">Note aggiuntive</label>
+          <textarea id="order-notes"
+                    placeholder="Eventuali richieste..." data-i18n-placeholder="notesPlaceholder"></textarea>
+
+          <button id="order-whatsapp" type="submit" class="whatsapp-button">
+            <span data-i18n="orderWhatsapp">ORDINA SU WHATSAPP</span>
+          </button>
+        </form>
+
+        <a id="call-us" class="whatsapp-button call-button" href="tel:+390832655300" hidden>
+          <span data-i18n="callUs">CHIAMACI</span>
+        </a>
+
+        <p class="cart-disclaimer">
+          <span data-i18n="cartDisclaimer">L'ordine verrà preparato come messaggio WhatsApp.
+          L'invio non è automatico: dovrai confermarlo tu.</span>
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <dialog id="recommendation-dialog" class="recommendation-dialog" aria-labelledby="recommendation-title">
+    <div class="recommendation-content">
+      <p class="eyebrow" data-i18n="recommendationEyebrow">UN CONSIGLIO PER IL TUO ORDINE</p>
+      <h2 id="recommendation-title" data-i18n="recommendationTitle">Ti va di aggiungere qualcosa da bere?</h2>
+      <p class="recommendation-intro" data-i18n="recommendationText">Aggiungi una o più bevande o birre al tuo ordine, poi continua su WhatsApp.</p>
+      <div id="recommendation-list" class="recommendation-list"></div>
+      <button id="continue-whatsapp" class="skip-recommendation" type="button" data-i18n="continueToWhatsapp">CONTINUA SU WHATSAPP</button>
+    </div>
+  </dialog>
+
+  <dialog id="customization-dialog" class="recommendation-dialog" aria-labelledby="customization-title">
+    <div class="recommendation-content">
+      <button id="close-customization" class="customization-close" type="button" aria-label="Chiudi">×</button>
+      <p class="eyebrow" data-i18n="customizationEyebrow">PERSONALIZZA IL TUO PIATTO</p>
+      <h2 id="customization-title"></h2>
+      <p id="customization-base-price" class="customization-base-price"></p>
+      <section class="removal-section" aria-labelledby="removal-title">
+        <h3 id="removal-title" data-i18n="removeIngredientsTitle">Togli ingredienti</h3>
+        <p data-i18n="removeIngredientsHint">Seleziona gli ingredienti da togliere. Nessuna variazione di prezzo.</p>
+        <div id="removable-ingredients" class="customization-options removal-options"></div>
+      </section>
+      <section class="extras-section" aria-labelledby="extras-title">
+        <h3 id="extras-title" data-i18n="addIngredientsTitle">Aggiungi extra</h3>
+        <div id="customization-options" class="customization-options"></div>
+      </section>
+      <div class="customization-footer">
+        <strong><span data-i18n="customizationTotal">Totale</span>: <span id="customization-total"></span></strong>
+        <button id="confirm-customization" class="add-button" type="button" data-i18n="confirmCustomization">AGGIUNGI AL CARRELLO</button>
+      </div>
+    </div>
+  </dialog>
+
+  <footer class="footer">
+    <img src="https://i.postimg.cc/VrvjWvV0/SCRITTA.png"
+         alt="La Pergola" class="footer-brand-name">
+    <p data-i18n="footerTagline">Pizzeria • Tradizione • Passione</p>
+    <p data-i18n="footerContact">Per informazioni e ordini, contattaci su WhatsApp.</p>
+  </footer>
+
+</body>
+</html>
