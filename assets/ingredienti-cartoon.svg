@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="360" viewBox="0 0 360 360" fill="none">
+  <g opacity=".25" stroke-linecap="round" stroke-linejoin="round">
+    <!-- tomato -->
+    <g transform="translate(39 43) rotate(-13 29 29)" stroke="#a9573c" stroke-width="2.4">
+      <circle cx="29" cy="31" r="20" fill="#e68b68"/>
+      <path d="M29 12c-2-7-8-9-12-7 2 4 6 7 12 7Zm0 0c2-7 8-9 12-7-2 4-6 7-12 7Zm0 1c-5-5-10-4-13-1 4 3 8 4 13 1Zm0 0c5-5 10-4 13-1-4 3-8 4-13 1Z" fill="#71834e" stroke="#596344"/>
+      <path d="M24 25c-3 3-4 8-3 11m17-11c3 3 4 8 3 11" opacity=".65"/>
+    </g>
+    <!-- basil leaves -->
+    <g transform="translate(222 38) rotate(18 35 25)" stroke="#596344" stroke-width="2.3">
+      <path d="M31 44C12 46 7 32 16 19c5 9 10 12 15 13C24 20 29 9 40 6c0 11 1 18 6 22C49 15 60 11 69 17c-5 10-12 17-23 19 8 4 13 11 12 20-12-1-21-5-26-12Z" fill="#9aaa70"/>
+      <path d="M31 44c5-12 12-21 23-30M32 41 17 22m20 12 28-15m-28 21 17 12" opacity=".8"/>
+    </g>
+    <!-- chili pepper -->
+    <g transform="translate(258 180) rotate(21 29 30)" stroke="#a9573c" stroke-width="2.5">
+      <path d="M18 15c12 1 25-2 33 5 9 8 4 21-3 31-7 10-18 20-25 14-8-7 4-16 2-26-1-7-4-14-7-24Z" fill="#db7153"/>
+      <path d="M18 16c-1-7 2-11 8-12m-6 11c5 0 8-2 10-6" stroke="#596344"/>
+      <path d="M43 22c3 7 1 13-3 18" opacity=".6"/>
+    </g>
+    <!-- cheese wedge -->
+    <g transform="translate(47 224) rotate(-9 30 26)" stroke="#b38a3e" stroke-width="2.4">
+      <path d="m7 17 48-12-7 42L7 55Z" fill="#e9c66f"/>
+      <path d="m7 17 41 30M29 12l-3 10m16 9-2 7M17 38l-2 6"/>
+      <circle cx="30" cy="31" r="3" fill="#f1dfa7"/><circle cx="39" cy="43" r="2.5" fill="#f1dfa7"/>
+    </g>
+    <!-- olives -->
+    <g transform="translate(166 259) rotate(-18 25 20)" stroke="#596344" stroke-width="2.4">
+      <ellipse cx="18" cy="20" rx="12" ry="16" fill="#768052"/>
+      <ellipse cx="44" cy="17" rx="11" ry="15" fill="#768052"/>
+      <ellipse cx="18" cy="20" rx="4" ry="7" stroke="#e2cfaa"/>
+      <ellipse cx="44" cy="17" rx="3.5" ry="6" stroke="#e2cfaa"/>
+    </g>
+    <!-- mushroom -->
+    <g transform="translate(75 117) rotate(10 28 24)" stroke="#81796d" stroke-width="2.3">
+      <path d="M26 25h17l4 21c-7 5-18 5-25 0Z" fill="#f3e6cf"/>
+      <path d="M8 25C10 10 20 4 34 5c14 1 23 9 24 20-17 5-34 5-50 0Z" fill="#c6a781"/>
+      <path d="M21 18c6-6 14-8 23-5" opacity=".65"/>
+    </g>
+    <!-- garlic -->
+    <g transform="translate(188 120) rotate(-10 25 25)" stroke="#a78c68" stroke-width="2.3">
+      <path d="M31 10c-2-6 1-9 5-11m-5 12c-7-6-14-4-17 2-12 17-3 34 15 35 19 1 29-17 16-33-4-5-11-6-19-3Z" fill="#f1e6d3"/>
+      <path d="M31 13c-7 8-9 19-7 34m8-33c5 8 8 19 7 33" opacity=".7"/>
+    </g>
+    <!-- oregano sprig -->
+    <g transform="translate(33 315) rotate(-18 30 15)" stroke="#596344" stroke-width="2">
+      <path d="M5 24c19-12 34-16 55-19"/>
+      <path d="M19 18c-8-9-14-9-18-6 4 8 9 11 18 9m15-9c-2-9 2-13 8-14 2 8 0 13-7 18m7 1c7-8 13-7 17-3-5 7-10 9-17 7m-36 2c-6 0-10 3-12 8 7 3 13 1 19-5" fill="#9aaa70"/>
+    </g>
+  </g>
+</svg>

@@ -64,22 +64,18 @@ const menu = [
   {id:8,name:"Quattro Formaggi",category:"Le classiche",price:8,description:"Pomodoro, mozzarella, emmental, scamorza affumicata, gorgonzola, origano"},
   {id:9,name:"Capricciosa",category:"Le classiche",price:8,description:"Pomodoro, mozzarella, funghi, carciofi, prosciutto cotto, capperi, olive nere, origano"},
   {id:10,name:"Radicchio e Gorgonzola",category:"Le classiche",price:7.50,description:"Pomodoro, mozzarella, radicchio, gorgonzola, origano"},
-  {id:11,name:"Pezzetti",category:"Le classiche",price:8,description:"Pomodoro, mozzarella, pezzetti di cavallo"},
+  {id:101,name:"Tonno e cipolla",category:"Le classiche",price:8,description:"Pomodoro, mozzarella, tonno, cipolla, origano"},
+  {id:102,name:"Patapizza",category:"Le classiche",price:6.50,description:"Pomodoro, mozzarella, patatine"},
+  {id:103,name:"Wurstel e patatine",category:"Le classiche",price:7.50,description:"Pomodoro, mozzarella, wurstel, patatine"},
   {id:12,name:"Funghi Misti",category:"Le classiche",price:8,description:"Pomodoro, mozzarella, porcini, funghi sott'olio, origano"},
-  {id:14,name:"Vegetariana",category:"Le classiche",price:8.50,description:"Pomodoro, mozzarella, funghi, carciofi, capperi, peperoni, melanzane, olive nere, origano"},
   {id:15,name:"Salsiccia Friarielli",category:"Le classiche",price:8.50,description:"Pomodoro, mozzarella, salsiccia fresca, friarielli, origano"},
   {id:16,name:"Completa",category:"Le classiche",price:9,description:"Pomodoro, mozzarella, funghi, carciofi, prosciutto cotto, capperi, tonno, alici, olive, origano"},
   {id:17,name:"Salsiccia e Porcini",category:"Le classiche",price:8.50,description:"Pomodoro, mozzarella, salsiccia fresca, funghi porcini, origano"},
 
   // LE NOSTRE PROPOSTE
-  {id:18,name:"Kebab",category:"Le nostre proposte",price:7,description:"Pomodoro, mozzarella, kebab, salsa kebab"},
-  {id:19,name:"Radicchio e Gorgonzola",category:"Le nostre proposte",price:7.50,description:"Pomodoro, mozzarella, radicchio, gorgonzola, origano"},
   {id:20,name:"Pezzetti",category:"Le nostre proposte",price:8,description:"Pomodoro, mozzarella, pezzetti di cavallo"},
-  {id:21,name:"Marinara",category:"Le nostre proposte",price:8,description:"Pomodoro, mozzarella, surimi, calamari, origano"},
-  {id:22,name:"Funghi Misti",category:"Le nostre proposte",price:8,description:"Pomodoro, mozzarella, porcini, funghi sott'olio, origano"},
+  {id:21,name:"Marinara",category:"Le classiche",price:8,description:"Pomodoro, mozzarella, surimi, calamari, origano"},
   {id:23,name:"Vegetariana",category:"Le nostre proposte",price:8.50,description:"Pomodoro, mozzarella, funghi, carciofi, capperi, peperoni, melanzane, olive nere, origano"},
-  {id:24,name:"Salsiccia Friarielli",category:"Le nostre proposte",price:8.50,description:"Pomodoro, mozzarella, salsiccia fresca, friarielli, origano"},
-  {id:25,name:"Salsiccia e Porcini",category:"Le nostre proposte",price:8.50,description:"Pomodoro, mozzarella, salsiccia fresca, funghi porcini, origano"},
   {id:26,name:"Scattarisciata",category:"Le nostre proposte",price:10,description:"Impasto integrale, pomodori scattarisciati con cipolla, olive, capperi, stracciatella, rucola"},
   {id:27,name:"Nerano",category:"Le nostre proposte",price:11,description:"Passata di zucchina, mozzarella, provola affumicata, zucchina grattugiata, basilico"},
   {id:28,name:"Campana",category:"Le nostre proposte",price:10,description:"Mozzarella di bufala, salsiccia fresca, friarielli"},
@@ -182,6 +178,8 @@ const removableIngredientsByProduct = Object.fromEntries(menu
         !/^(?:impasto\s+(?:integrale|ai\s+cereali)|doppio\s+impasto)$/i.test(ingredient) &&
         !/^(?:pomodoro|mozzarella)(?:$|\s)/i.test(ingredient))
   ]));
+removableIngredientsByProduct[2] = removableIngredientsByProduct[2]
+  .filter(ingredient => !/^salamino piccante$/i.test(ingredient));
 removableIngredientsByProduct[26] = ["Rucola", "Stracciatella"];
 removableIngredientsByProduct[29].push("Pomodoro secco");
 removableIngredientsByProduct[100] = [];
@@ -303,7 +301,6 @@ const translations = {
     bookingClosedDate: "Siamo chiusi in questa data. Scegli un altro giorno.",
     cartDisclaimer: "L'ordine verrà preparato come messaggio WhatsApp. L'invio non è automatico: dovrai confermarlo tu.",
     footerTagline: "Pizzeria • Tradizione • Passione",
-    footerContact: "Per informazioni e ordini, contattaci su WhatsApp.",
     addToCart: "+ AGGIUNGI AL CARRELLO",
     customizeProduct: "PERSONALIZZA",
     recommendationEyebrow: "UN CONSIGLIO PER IL TUO ORDINE",
@@ -410,7 +407,6 @@ const translations = {
     bookingClosedDate: "We are closed on this date. Please choose another day.",
     cartDisclaimer: "Your order will be prepared as a WhatsApp message. It will not be sent automatically: you will need to confirm it.",
     footerTagline: "Pizzeria • Tradition • Passion",
-    footerContact: "For information and orders, contact us on WhatsApp.",
     addToCart: "+ ADD TO CART",
     customizeProduct: "CUSTOMIZE",
     recommendationEyebrow: "A LITTLE SUGGESTION FOR YOUR ORDER",
@@ -515,6 +511,9 @@ const englishMenu = {
   37:["Disco","Double dough, tomato, mozzarella, mushrooms, ham, capers and tuna"],
   38:["Classic Puccia","Cooked ham, Galbanino cheese and lettuce"],
   100:["Build your own puccia","Choose the ingredients you like"],
+  101:["Tuna and onion","Tomato, mozzarella, tuna, onion and oregano"],
+  102:["Patapizza","Tomato, mozzarella and fries"],
+  103:["Hot dog sausage and fries","Tomato, mozzarella, hot dog sausage and fries"],
   39:["Completa Puccia","Ungherese salami, ventricina salami, Emmental and lettuce"],
   40:["Romagnola Puccia","Prosciutto crudo, Emmental and tomato"],
   41:["Leccese Puccia","Tuna, Emmental and capers"],
