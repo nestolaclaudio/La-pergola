@@ -255,6 +255,7 @@ const translations = {
     discoverMenu: "ORDINA D'ASPORTO",
     bookTable: "PRENOTA UN TAVOLO",
     cartTopLink: "🛒 Carrello",
+    cartTopItems: "articoli nel carrello",
     storyEyebrow: "LA NOSTRA STORIA",
     storyTitle: "Tradizione e convivialità a Galugnano.",
     storyIntro: "La Pergola è una storica pizzeria e trattoria a Galugnano, frazione di San Donato di Lecce. È apprezzata per le pizze, le pucce e i piatti della cucina tradizionale salentina. L'atmosfera informale e accogliente e i posti a sedere all'interno e all'aperto la rendono adatta a cene in famiglia e in compagnia. Da 40 anni accogliamo i nostri ospiti con la stessa passione per la cucina e la convivialità.",
@@ -361,6 +362,7 @@ const translations = {
     discoverMenu: "ORDER TAKEAWAY",
     bookTable: "BOOK A TABLE",
     cartTopLink: "🛒 Cart",
+    cartTopItems: "items in cart",
     storyEyebrow: "OUR STORY",
     storyTitle: "Tradition and good company in Galugnano.",
     storyIntro: "La Pergola is a historic pizzeria and trattoria in Galugnano, a hamlet of San Donato di Lecce. It is known for its pizzas, pucce and traditional Salento dishes. Its relaxed, welcoming atmosphere and indoor and outdoor seating make it a lovely place for dinner with family and friends. For 40 years, we have welcomed our guests with the same passion for food and conviviality.",
@@ -1153,6 +1155,13 @@ function renderCart() {
   );
 
   document.getElementById("cart-total").textContent = formatPrice(total);
+
+  const cartTopSummary = document.getElementById("cart-top-summary");
+  if (cartTopSummary) {
+    const quantity = items.reduce((sum, item) => sum + item.quantity, 0);
+    cartTopSummary.textContent = `${quantity} · ${formatPrice(total)}`;
+    cartTopSummary.setAttribute("aria-label", `${quantity} ${t("cartTopItems")}, ${formatPrice(total)}`);
+  }
 
   if (items.length === 0) {
     cartItems.innerHTML = `<p>${escapeHTML(t("cartEmpty"))}</p>`;
