@@ -90,8 +90,6 @@
           <form id="booking-form">
             <label for="booking-name" data-i18n="customerName">Nome</label>
             <input id="booking-name" type="text" placeholder="Il tuo nome" data-i18n-placeholder="namePlaceholder" required>
-            <label for="booking-phone" data-i18n="bookingPhone">Telefono</label>
-            <input id="booking-phone" type="tel" autocomplete="tel" required>
             <label for="booking-date" data-i18n="bookingDate">Data</label>
             <div class="calendar-picker" data-calendar-picker="booking">
               <div class="calendar-heading">
@@ -102,9 +100,10 @@
               <div class="calendar-grid" role="group" aria-label="Seleziona una data"></div>
               <p class="calendar-note" aria-live="polite"></p>
             </div>
-            <input id="booking-date" type="date" required>
-            <label for="booking-time" data-i18n="bookingTime">Orario</label>
-            <input id="booking-time" type="time" min="18:30" max="23:00" step="900" required>
+            <input id="booking-date" type="hidden">
+            <div class="pickup-time-label" data-i18n="bookingTime">Orario</div>
+            <input id="booking-time" type="hidden" required>
+            <div id="booking-time-slots" class="pickup-time-slots" role="group" aria-label="Seleziona l'orario di prenotazione"></div>
             <label for="booking-guests" data-i18n="bookingGuests">Numero di persone</label>
             <input id="booking-guests" type="number" min="1" max="30" value="2" required>
             <label for="booking-notes" data-i18n="orderNotes">Note aggiuntive</label>

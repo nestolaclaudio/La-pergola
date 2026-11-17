@@ -715,6 +715,10 @@ button, a {
   font-weight: 600;
 }
 
+.booking-section .calendar-note:empty {
+  display: none;
+}
+
 .pickup-time-slots {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

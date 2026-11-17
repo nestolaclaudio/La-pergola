@@ -4,19 +4,32 @@ const PHONE_NUMBER = "+390832655300";
 const BUSINESS_TIME_ZONE = "Europe/Rome";
 
 function getContactAvailability(now = new Date()) {
-  const parts = new Intl.DateTimeFormat("en-GB", {
+  const formatter = new Intl.DateTimeFormat("en-GB", {
     timeZone: BUSINESS_TIME_ZONE,
     hour: "2-digit",
     minute: "2-digit",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
     hourCycle: "h23"
-  }).formatToParts(now);
+  });
+  const parts = formatter.formatToParts(now);
+  const part = type => parts.find(item => item.type === type).value;
   const hour = Number(parts.find(part => part.type === "hour").value);
   const minute = Number(parts.find(part => part.type === "minute").value);
   const minutesSinceMidnight = hour * 60 + minute;
   return {
     whatsapp: minutesSinceMidnight >= 1 && minutesSinceMidnight < 19 * 60,
-    phone: hour >= 19 && hour < 24
+    phone: minutesSinceMidnight >= 19 * 60,
+    minutesSinceMidnight,
+    businessDate: `${part("year")}-${part("month")}-${part("day")}`
   };
+}
+
+function bookingRequiresPhone(dateValue, availability = getContactAvailability()) {
+  return Boolean(dateValue)
+    && dateValue === availability.businessDate
+    && availability.minutesSinceMidnight > 19 * 60;
 }
 
 function isWhatsAppOrderingOpen() {
@@ -264,8 +277,8 @@ const translations = {
     namePlaceholder: "Il tuo nome",
     pickupDate: "Data di ritiro",
     chooseDate: "Scegli una data",
-    calendarMondayTuesday: "Il locale potrebbe essere chiuso il lunedì o il martedì.",
-    calendarHolidayClosed: "È un giorno festivo: potremmo essere aperti anche se cade di lunedì o martedì.",
+    calendarMondayTuesday: "Il locale potrebbe essere chiuso il lunedì e il martedì.",
+    calendarHolidayClosed: "Il locale potrebbe essere aperto nei giorni festivi.",
     calendarWeekdays: ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"],
     calendarSelectDate: "Seleziona una data",
     pickupTime: "Orario di ritiro (18:30–23:00)",
@@ -279,7 +292,9 @@ const translations = {
     bookingIntro: "Compila i tuoi dati: la richiesta verrà inviata su WhatsApp e sarà confermata dal ristorante.",
     bookingPhone: "Telefono",
     bookingDate: "Data",
+    bookingDateRequired: "Seleziona una data per la prenotazione.",
     bookingTime: "Orario",
+    bookingTimeRequired: "Seleziona un orario per la prenotazione.",
     bookingGuests: "Numero di persone",
     bookingSubmit: "INVIA RICHIESTA SU WHATSAPP",
     bookingHeading: "RICHIESTA DI PRENOTAZIONE - LA PERGOLA",
@@ -368,8 +383,8 @@ const translations = {
     namePlaceholder: "Your name",
     pickupDate: "Pickup date",
     chooseDate: "Choose a date",
-    calendarMondayTuesday: "The restaurant may be closed on Mondays or Tuesdays.",
-    calendarHolidayClosed: "This is a public holiday: we may be open even if it falls on a Monday or Tuesday.",
+    calendarMondayTuesday: "The restaurant may be closed on Mondays and Tuesdays.",
+    calendarHolidayClosed: "The restaurant may be open on public holidays.",
     calendarWeekdays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     calendarSelectDate: "Choose a date",
     pickupTime: "Pickup time (6:30–11:00 pm)",
@@ -383,7 +398,9 @@ const translations = {
     bookingIntro: "Enter your details: your request will be sent on WhatsApp and confirmed by the restaurant.",
     bookingPhone: "Phone",
     bookingDate: "Date",
+    bookingDateRequired: "Please select a booking date.",
     bookingTime: "Time",
+    bookingTimeRequired: "Please select a booking time.",
     bookingGuests: "Number of guests",
     bookingSubmit: "SEND BOOKING REQUEST ON WHATSAPP",
     bookingHeading: "BOOKING REQUEST - LA PERGOLA",
@@ -570,6 +587,7 @@ try {
 const pickupDateInput = document.getElementById("pickup-date");
 const pickupTimeInput = document.getElementById("pickup-time");
 const bookingDateInput = document.getElementById("booking-date");
+const bookingTimeInput = document.getElementById("booking-time");
 function renderPickupTimes() {
   const slots = document.getElementById("pickup-time-slots");
   slots.replaceChildren();
@@ -592,6 +610,30 @@ document.getElementById("pickup-time-slots").addEventListener("click", event => 
   pickupTimeInput.value = slot.dataset.pickupTime;
   renderPickupTimes();
 });
+
+function renderBookingTimes() {
+  const slots = document.getElementById("booking-time-slots");
+  slots.replaceChildren();
+  for (let minutes = 18 * 60 + 30; minutes <= 23 * 60; minutes += 15) {
+    const time = `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "pickup-time-slot";
+    button.textContent = time;
+    button.dataset.bookingTime = time;
+    button.setAttribute("aria-pressed", String(bookingTimeInput.value === time));
+    if (bookingTimeInput.value === time) button.classList.add("is-selected");
+    slots.appendChild(button);
+  }
+}
+
+document.getElementById("booking-time-slots").addEventListener("click", event => {
+  const slot = event.target.closest("[data-booking-time]");
+  if (!slot) return;
+  bookingTimeInput.value = slot.dataset.bookingTime;
+  renderBookingTimes();
+});
+
 function dateOptionLabel(date) {
   return new Intl.DateTimeFormat(currentLanguage === "en" ? "en-GB" : "it-IT", {
     weekday: "long", day: "numeric", month: "long", year: "numeric"
@@ -685,7 +727,7 @@ function renderCalendar(kind) {
   }
   const selected = input.value ? new Date(`${input.value}T12:00:00`) : null;
   const note = picker.querySelector(".calendar-note");
-  note.textContent = selected && holidays.has(input.value) && [1, 2].includes(selected.getDay())
+  if (note) note.textContent = selected && holidays.has(input.value)
     ? translations[currentLanguage].calendarHolidayClosed
     : selected && [1, 2].includes(selected.getDay())
       ? translations[currentLanguage].calendarMondayTuesday
@@ -720,6 +762,7 @@ document.querySelectorAll("[data-calendar-picker]").forEach(picker => {
       calendarMonths[kind] = new Date(selected.getFullYear(), selected.getMonth(), 1, 12);
       renderCalendar(kind);
     }
+    if (input === bookingDateInput) updateOrderingAvailability();
   });
 });
 
@@ -1240,17 +1283,24 @@ document.getElementById("order-form").addEventListener("submit", function(event)
 
 document.getElementById("booking-form").addEventListener("submit", function(event) {
   event.preventDefault();
-  if (!isWhatsAppOrderingOpen()) {
+  if (bookingRequiresPhone(bookingDateInput.value)) {
     updateOrderingAvailability();
     return;
   }
 
   const name = document.getElementById("booking-name").value.trim();
-  const phone = document.getElementById("booking-phone").value.trim();
   const date = bookingDateInput.value;
-  const time = document.getElementById("booking-time").value;
+  const time = bookingTimeInput.value;
   const guests = document.getElementById("booking-guests").value;
   const notes = document.getElementById("booking-notes").value.trim();
+  if (!date) {
+    alert(t("bookingDateRequired"));
+    return;
+  }
+  if (!time) {
+    alert(t("bookingTimeRequired"));
+    return;
+  }
   const chosenDate = new Date(`${date}T12:00:00`);
   if (!isSpecialOpen(chosenDate)) {
     alert(t("bookingClosedDate"));
@@ -1260,7 +1310,6 @@ document.getElementById("booking-form").addEventListener("submit", function(even
   const lines = [
     `*${t("bookingHeading")}*`,
     `*${t("customerName")}:* ${name}`,
-    `*${t("bookingPhone")}:* ${phone}`,
     `*${t("bookingDate")}:* ${date.split("-").reverse().join("/")}`,
     `*${t("bookingTime")}:* ${time}`,
     `*${t("bookingGuests")}:* ${guests}`
@@ -1293,7 +1342,7 @@ function applyLanguage() {
     if (copy[key]) element.placeholder = copy[key];
   });
 
-  document.title = currentLanguage === "en" ? "La Pergola | Pizzeria" : "La Pergola | Pizzeria";
+  document.title = "La Pergola Galugnano";
   document.querySelector('meta[name="description"]').content = currentLanguage === "en"
     ? "Discover the menu at La Pergola Pizzeria and order takeaway on WhatsApp."
     : "Scopri il menù della Pizzeria La Pergola e ordina da asporto su WhatsApp.";
@@ -1307,6 +1356,7 @@ function applyLanguage() {
   renderPickupDates();
   renderBookingDates();
   renderPickupTimes();
+  renderBookingTimes();
   renderCategories();
   renderProducts();
   renderCart();
@@ -1318,6 +1368,7 @@ function updateOrderingAvailability() {
   const availability = getContactAvailability();
   const orderingOpen = availability.whatsapp;
   const callAvailable = availability.phone;
+  const bookingCallRequired = bookingRequiresPhone(bookingDateInput.value, availability);
   document.getElementById("cart-items").hidden = false;
   document.querySelector(".cart-total").hidden = false;
   document.querySelector(".cart-panel h2").hidden = false;
@@ -1326,8 +1377,8 @@ function updateOrderingAvailability() {
   document.querySelector(".cart-disclaimer").hidden = !orderingOpen;
   document.getElementById("order-form").hidden = !orderingOpen;
   document.getElementById("call-us").hidden = !callAvailable;
-  document.getElementById("booking-form").hidden = !orderingOpen;
-  document.getElementById("booking-call").hidden = !callAvailable;
+  document.getElementById("booking-form").hidden = bookingCallRequired;
+  document.getElementById("booking-call").hidden = !bookingCallRequired;
   document.querySelectorAll(".add-button").forEach(button => {
     button.disabled = false;
   });
@@ -1343,9 +1394,18 @@ document.getElementById("language-toggle").addEventListener("click", () => {
   applyLanguage();
 });
 
+document.querySelector(".booking-button").addEventListener("click", event => {
+  event.preventDefault();
+  const bookingSection = document.getElementById("prenotazione");
+  bookingSection.querySelector(".booking-panel").open = true;
+  history.pushState(null, "", "#prenotazione");
+  bookingSection.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
 renderCategories();
 filterCategory("Le nostre proposte");
 renderCart();
+renderBookingTimes();
 applyLanguage();
 updateOrderingAvailability();
 window.setInterval(updateOrderingAvailability, 60 * 1000);
