@@ -1397,9 +1397,18 @@ document.getElementById("language-toggle").addEventListener("click", () => {
 document.querySelector(".booking-button").addEventListener("click", event => {
   event.preventDefault();
   const bookingSection = document.getElementById("prenotazione");
-  bookingSection.querySelector(".booking-panel").open = true;
-  history.pushState(null, "", "#prenotazione");
-  bookingSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  const bookingPanel = bookingSection.querySelector(".booking-panel");
+  const bookingToggle = bookingPanel.querySelector(".booking-toggle");
+  const bookingContent = bookingPanel.querySelector(".booking-content");
+  bookingPanel.open = true;
+  if (window.location.hash !== "#prenotazione") {
+    window.location.hash = "prenotazione";
+  }
+  requestAnimationFrame(() => {
+    bookingPanel.open = true;
+    bookingContent.scrollIntoView({ behavior: "smooth", block: "start" });
+    bookingToggle.focus({ preventScroll: true });
+  });
 });
 
 renderCategories();

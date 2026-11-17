@@ -614,6 +614,38 @@ button, a {
   }
 }
 
+@media (max-width: 420px) {
+  .booking-section {
+    padding: 24px 4%;
+  }
+
+  .booking-content {
+    padding: 0 12px 14px;
+  }
+
+  .booking-section .calendar-picker {
+    padding: 8px;
+  }
+
+  .booking-section .calendar-grid {
+    gap: 2px;
+  }
+
+  .booking-section .calendar-day {
+    min-height: 38px;
+  }
+
+  .booking-section .calendar-note {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .booking-section #booking-time-slots {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+}
+
 #booking-form {
   display: grid;
   gap: 7px;
