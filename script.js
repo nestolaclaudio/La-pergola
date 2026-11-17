@@ -236,9 +236,12 @@ const paidExtras = [
 const translations = {
   it: {
     heroEyebrow: "TRADIZIONE • PASSIONE • QUALITÀ",
+    instagramFollow: "Seguici su Instagram",
     heroTitle: "Il gusto della tradizione.",
     heroText: "Benvenuti a La Pergola. Scopri le nostre pizze, le specialità della casa e tanto altro.",
-    discoverMenu: "SCOPRI IL MENÙ",
+    discoverMenu: "ORDINA D'ASPORTO",
+    bookTable: "PRENOTA UN TAVOLO",
+    cartTopLink: "🛒 Carrello",
     storyEyebrow: "LA NOSTRA STORIA",
     storyTitle: "Tradizione e convivialità a Galugnano.",
     storyIntro: "La Pergola è una storica pizzeria e trattoria a Galugnano, frazione di San Donato di Lecce. È apprezzata per le pizze, le pucce e i piatti della cucina tradizionale salentina. L'atmosfera informale e accogliente e i posti a sedere all'interno e all'aperto la rendono adatta a cene in famiglia e in compagnia. Da 40 anni accogliamo i nostri ospiti con la stessa passione per la cucina e la convivialità.",
@@ -261,6 +264,10 @@ const translations = {
     namePlaceholder: "Il tuo nome",
     pickupDate: "Data di ritiro",
     chooseDate: "Scegli una data",
+    calendarMondayTuesday: "Il locale potrebbe essere chiuso il lunedì o il martedì.",
+    calendarHolidayClosed: "È un giorno festivo: potremmo essere aperti anche se cade di lunedì o martedì.",
+    calendarWeekdays: ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"],
+    calendarSelectDate: "Seleziona una data",
     pickupTime: "Orario di ritiro (18:30–23:00)",
     orderNotes: "Note aggiuntive",
     notesPlaceholder: "Eventuali richieste...",
@@ -293,7 +300,6 @@ const translations = {
     selectVersion: "Scegli una versione",
     chooseVersion: "Seleziona...",
     quantityEach: "ciascuno",
-    closedDate: "Siamo chiusi il lunedì e il martedì. Scegli un giorno dal mercoledì alla domenica.",
     emptyCartAlert: "Il carrello è vuoto. Aggiungi almeno un prodotto!",
     nameDateTimeAlert: "Inserisci il nome, la data e l'orario di ritiro.",
     chooseDessertAlert: "Scegli piadina o calzone prima di aggiungere il dolce al carrello.",
@@ -334,9 +340,12 @@ const translations = {
   },
   en: {
     heroEyebrow: "TRADITION • PASSION • QUALITY",
+    instagramFollow: "Follow us on Instagram",
     heroTitle: "The taste of tradition.",
     heroText: "Welcome to La Pergola. Discover our pizzas, house specialities and much more.",
-    discoverMenu: "EXPLORE THE MENU",
+    discoverMenu: "ORDER TAKEAWAY",
+    bookTable: "BOOK A TABLE",
+    cartTopLink: "🛒 Cart",
     storyEyebrow: "OUR STORY",
     storyTitle: "Tradition and good company in Galugnano.",
     storyIntro: "La Pergola is a historic pizzeria and trattoria in Galugnano, a hamlet of San Donato di Lecce. It is known for its pizzas, pucce and traditional Salento dishes. Its relaxed, welcoming atmosphere and indoor and outdoor seating make it a lovely place for dinner with family and friends. For 40 years, we have welcomed our guests with the same passion for food and conviviality.",
@@ -359,6 +368,10 @@ const translations = {
     namePlaceholder: "Your name",
     pickupDate: "Pickup date",
     chooseDate: "Choose a date",
+    calendarMondayTuesday: "The restaurant may be closed on Mondays or Tuesdays.",
+    calendarHolidayClosed: "This is a public holiday: we may be open even if it falls on a Monday or Tuesday.",
+    calendarWeekdays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    calendarSelectDate: "Choose a date",
     pickupTime: "Pickup time (6:30–11:00 pm)",
     orderNotes: "Additional notes",
     notesPlaceholder: "Any special requests...",
@@ -391,7 +404,6 @@ const translations = {
     selectVersion: "Choose a version",
     chooseVersion: "Select...",
     quantityEach: "each",
-    closedDate: "We are closed on Mondays and Tuesdays. Please choose a day from Wednesday to Sunday.",
     emptyCartAlert: "Your cart is empty. Add at least one item!",
     nameDateTimeAlert: "Enter your name, pickup date and pickup time.",
     chooseDessertAlert: "Choose piadina or calzone before adding the dessert to your cart.",
@@ -558,39 +570,32 @@ try {
 const pickupDateInput = document.getElementById("pickup-date");
 const pickupTimeInput = document.getElementById("pickup-time");
 const bookingDateInput = document.getElementById("booking-date");
-const specialOpeningDates = new Set();
-const specialClosedDates = new Set();
-
-async function loadSpecialDates() {
-  try {
-    const response = await fetch("./availability.json", { cache: "no-store" });
-    if (!response.ok) throw new Error(`Availability feed returned ${response.status}`);
-    const availability = await response.json();
-    specialOpeningDates.clear();
-    specialClosedDates.clear();
-    (availability.openDates || []).forEach(date => specialOpeningDates.add(date));
-    (availability.closedDates || []).forEach(date => specialClosedDates.add(date));
-    renderPickupDates();
-    renderBookingDates();
-  } catch (error) {
-    // Keep the regular weekly schedule if the optional feed is unavailable.
+function renderPickupTimes() {
+  const slots = document.getElementById("pickup-time-slots");
+  slots.replaceChildren();
+  for (let minutes = 18 * 60 + 30; minutes <= 23 * 60; minutes += 10) {
+    const time = `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "pickup-time-slot";
+    button.textContent = time;
+    button.dataset.pickupTime = time;
+    button.setAttribute("aria-pressed", String(pickupTimeInput.value === time));
+    if (pickupTimeInput.value === time) button.classList.add("is-selected");
+    slots.appendChild(button);
   }
 }
 
-function isSpecialOpen(date) {
-  const key = formatLocalDate(date);
-  return specialOpeningDates.has(key) ||
-    (!specialClosedDates.has(key) && ![1, 2].includes(date.getDay()));
-}
-
+document.getElementById("pickup-time-slots").addEventListener("click", event => {
+  const slot = event.target.closest("[data-pickup-time]");
+  if (!slot) return;
+  pickupTimeInput.value = slot.dataset.pickupTime;
+  renderPickupTimes();
+});
 function dateOptionLabel(date) {
-  const label = new Intl.DateTimeFormat(
-    currentLanguage === "en" ? "en-GB" : "it-IT",
-    { weekday: "long", day: "numeric", month: "long" }
-  ).format(date);
-  return specialOpeningDates.has(formatLocalDate(date))
-    ? `${label} (${currentLanguage === "en" ? "special opening" : "apertura straordinaria"})`
-    : label;
+  return new Intl.DateTimeFormat(currentLanguage === "en" ? "en-GB" : "it-IT", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric"
+  }).format(date);
 }
 
 function formatLocalDate(date) {
@@ -600,48 +605,123 @@ function formatLocalDate(date) {
   return `${year}-${month}-${day}`;
 }
 
-const pickupDatePlaceholder = pickupDateInput.options[0];
-function renderPickupDates() {
-  const selectedDate = pickupDateInput.value;
-  pickupDateInput.replaceChildren(pickupDatePlaceholder);
-  pickupDatePlaceholder.textContent = translations[currentLanguage].chooseDate;
-
-  for (let offset = 0; offset < 60; offset++) {
-    const date = new Date();
-    date.setHours(12, 0, 0, 0);
-    date.setDate(date.getDate() + offset);
-
-    if (!isSpecialOpen(date)) continue;
-
-    const option = document.createElement("option");
-    option.value = formatLocalDate(date);
-    option.textContent = dateOptionLabel(date);
-    pickupDateInput.appendChild(option);
-  }
-
-  pickupDateInput.value = selectedDate;
+function easterSunday(year) {
+  const a = year % 19, b = Math.floor(year / 100), c = year % 100;
+  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31);
+  const day = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(year, month - 1, day, 12);
 }
 
-function renderBookingDates() {
-  const selectedDate = bookingDateInput.value;
-  const placeholder = bookingDateInput.options[0];
-  bookingDateInput.replaceChildren(placeholder);
-  placeholder.textContent = translations[currentLanguage].chooseDate;
-
-  for (let offset = 0; offset < 60; offset++) {
-    const date = new Date();
-    date.setHours(12, 0, 0, 0);
-    date.setDate(date.getDate() + offset);
-    if (!isSpecialOpen(date)) continue;
-
-    const option = document.createElement("option");
-    option.value = formatLocalDate(date);
-    option.textContent = dateOptionLabel(date);
-    bookingDateInput.appendChild(option);
-  }
-
-  bookingDateInput.value = selectedDate;
+function italianPublicHolidays(year) {
+  const dates = [
+    `${year}-01-01`, `${year}-01-06`, `${year}-04-25`, `${year}-05-01`,
+    `${year}-06-02`, `${year}-08-15`, `${year}-11-01`, `${year}-12-08`,
+    `${year}-12-25`, `${year}-12-26`
+  ];
+  const easterMonday = easterSunday(year);
+  easterMonday.setDate(easterMonday.getDate() + 1);
+  dates.push(formatLocalDate(easterMonday));
+  return new Set(dates);
 }
+
+const calendarMonths = {
+  booking: new Date(new Date().getFullYear(), new Date().getMonth(), 1, 12),
+  pickup: new Date(new Date().getFullYear(), new Date().getMonth(), 1, 12)
+};
+
+function renderCalendar(kind) {
+  const picker = document.querySelector(`[data-calendar-picker="${kind}"]`);
+  const input = document.getElementById(kind === "booking" ? "booking-date" : "pickup-date");
+  const monthDate = calendarMonths[kind];
+  const year = monthDate.getFullYear(), month = monthDate.getMonth();
+  const currentMonth = new Date();
+  currentMonth.setDate(1);
+  currentMonth.setHours(0, 0, 0, 0);
+  picker.querySelector('[data-calendar-shift="-1"]').disabled =
+    new Date(year, month, 1) <= currentMonth;
+  const monthLabel = new Intl.DateTimeFormat(currentLanguage === "en" ? "en-GB" : "it-IT", {
+    month: "long", year: "numeric"
+  }).format(monthDate);
+  picker.querySelector(".calendar-month").textContent = monthLabel;
+  const grid = picker.querySelector(".calendar-grid");
+  grid.replaceChildren();
+  translations[currentLanguage].calendarWeekdays.forEach(day => {
+    const heading = document.createElement("span");
+    heading.className = "calendar-weekday";
+    heading.textContent = day;
+    grid.appendChild(heading);
+  });
+  const firstWeekday = (new Date(year, month, 1, 12).getDay() + 6) % 7;
+  for (let blank = 0; blank < firstWeekday; blank++) {
+    const empty = document.createElement("span");
+    empty.className = "calendar-empty";
+    grid.appendChild(empty);
+  }
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  input.min = formatLocalDate(today);
+  const holidays = italianPublicHolidays(year);
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day, 12);
+    const key = formatLocalDate(date);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "calendar-day";
+    button.textContent = String(day);
+    button.dataset.calendarDate = key;
+    button.setAttribute("aria-label", dateOptionLabel(date));
+    button.setAttribute("aria-pressed", String(input.value === key));
+    if (date < today) button.disabled = true;
+    if (holidays.has(key)) {
+      button.classList.add("is-holiday");
+      button.title = currentLanguage === "en" ? "Public holiday" : "Giorno festivo";
+    }
+    if (input.value === key) button.classList.add("is-selected");
+    grid.appendChild(button);
+  }
+  const selected = input.value ? new Date(`${input.value}T12:00:00`) : null;
+  const note = picker.querySelector(".calendar-note");
+  note.textContent = selected && holidays.has(input.value) && [1, 2].includes(selected.getDay())
+    ? translations[currentLanguage].calendarHolidayClosed
+    : selected && [1, 2].includes(selected.getDay())
+      ? translations[currentLanguage].calendarMondayTuesday
+      : "";
+}
+
+function renderPickupDates() { renderCalendar("pickup"); }
+function renderBookingDates() { renderCalendar("booking"); }
+
+document.querySelectorAll("[data-calendar-picker]").forEach(picker => {
+  const kind = picker.dataset.calendarPicker;
+  const input = document.getElementById(kind === "booking" ? "booking-date" : "pickup-date");
+  picker.addEventListener("click", event => {
+    const shift = event.target.closest("[data-calendar-shift]");
+    const day = event.target.closest("[data-calendar-date]");
+    if (shift) {
+      calendarMonths[kind].setMonth(calendarMonths[kind].getMonth() + Number(shift.dataset.calendarShift));
+      renderCalendar(kind);
+    } else if (day) {
+      input.value = day.dataset.calendarDate;
+      renderCalendar(kind);
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  });
+});
+
+[bookingDateInput, pickupDateInput].forEach(input => {
+  input.addEventListener("change", () => {
+    if (input.value) {
+      const selected = new Date(`${input.value}T12:00:00`);
+      const kind = input === bookingDateInput ? "booking" : "pickup";
+      calendarMonths[kind] = new Date(selected.getFullYear(), selected.getMonth(), 1, 12);
+      renderCalendar(kind);
+    }
+  });
+});
 
 function escapeHTML(value) {
   return String(value).replace(/[&<>"']/g, character => ({
@@ -1219,13 +1299,14 @@ function applyLanguage() {
     : "Scopri il menù della Pizzeria La Pergola e ordina da asporto su WhatsApp.";
 
   const languageButton = document.getElementById("language-toggle");
-  languageButton.textContent = currentLanguage === "it" ? "EN" : "IT";
+  languageButton.textContent = currentLanguage === "it" ? "🇬🇧 EN" : "🇮🇹 IT";
   languageButton.setAttribute("aria-label", currentLanguage === "it"
     ? "View this site in English"
     : "Visualizza il sito in italiano");
 
   renderPickupDates();
   renderBookingDates();
+  renderPickupTimes();
   renderCategories();
   renderProducts();
   renderCart();
@@ -1266,6 +1347,5 @@ renderCategories();
 filterCategory("Le nostre proposte");
 renderCart();
 applyLanguage();
-loadSpecialDates();
 updateOrderingAvailability();
 window.setInterval(updateOrderingAvailability, 60 * 1000);

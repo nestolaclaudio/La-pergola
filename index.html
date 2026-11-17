@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f7f0e5">
-  <title>La Pergola | Pizzeria</title>
+  <title>La Pergola Galugnano</title>
   <meta name="description" content="Scopri il menù della Pizzeria La Pergola e ordina da asporto su WhatsApp.">
 
   <link rel="stylesheet" href="style.css">
@@ -22,7 +22,18 @@
            alt="La Pergola" class="brand-name">
     </a>
 
-    <button id="language-toggle" class="language-toggle" type="button" aria-label="View this site in English">EN</button>
+    <nav class="topbar-actions" aria-label="Navigazione rapida">
+      <a class="instagram-top" href="https://www.instagram.com/pizzeria_la_pergola_galugnano/" target="_blank" rel="noopener noreferrer" aria-label="Seguici su Instagram">
+        <span data-i18n="instagramFollow">Seguici su Instagram</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+          <circle cx="12" cy="12" r="4"></circle>
+          <circle class="instagram-dot" cx="17.5" cy="6.5" r="1"></circle>
+        </svg>
+      </a>
+      <a class="cart-top" href="#cart" data-i18n="cartTopLink" aria-label="Vai al carrello">🛒 Carrello</a>
+      <button id="language-toggle" class="language-toggle" type="button" aria-label="View this site in English">🇬🇧 EN</button>
+    </nav>
   </header>
 
   <main>
@@ -33,7 +44,10 @@
         <h1 data-i18n="heroTitle">Il gusto della tradizione.</h1>
         <p data-i18n="heroText">Benvenuti a La Pergola. Scopri le nostre pizze,
            le specialità della casa e tanto altro.</p>
-        <a href="#menu" class="main-button" data-i18n="discoverMenu">SCOPRI IL MENÙ</a>
+        <div class="hero-actions">
+          <a href="#menu" class="main-button" data-i18n="discoverMenu">SCOPRI IL MENÙ</a>
+          <a href="#prenotazione" class="main-button booking-button" data-i18n="bookTable">PRENOTA</a>
+        </div>
       </div>
     </section>
 
@@ -79,7 +93,16 @@
             <label for="booking-phone" data-i18n="bookingPhone">Telefono</label>
             <input id="booking-phone" type="tel" autocomplete="tel" required>
             <label for="booking-date" data-i18n="bookingDate">Data</label>
-            <select id="booking-date" required><option value="" data-i18n="chooseDate">Scegli una data</option></select>
+            <div class="calendar-picker" data-calendar-picker="booking">
+              <div class="calendar-heading">
+                <button type="button" class="calendar-nav" data-calendar-shift="-1" aria-label="Mese precedente">‹</button>
+                <strong class="calendar-month" aria-live="polite"></strong>
+                <button type="button" class="calendar-nav" data-calendar-shift="1" aria-label="Mese successivo">›</button>
+              </div>
+              <div class="calendar-grid" role="group" aria-label="Seleziona una data"></div>
+              <p class="calendar-note" aria-live="polite"></p>
+            </div>
+            <input id="booking-date" type="date" required>
             <label for="booking-time" data-i18n="bookingTime">Orario</label>
             <input id="booking-time" type="time" min="18:30" max="23:00" step="900" required>
             <label for="booking-guests" data-i18n="bookingGuests">Numero di persone</label>
@@ -129,13 +152,21 @@
           <input id="customer-name" type="text"
                  placeholder="Il tuo nome" data-i18n-placeholder="namePlaceholder" required>
 
-          <label for="pickup-date" data-i18n="pickupDate">Data di ritiro</label>
-          <select id="pickup-date" required>
-            <option value="" data-i18n="chooseDate">Scegli una data</option>
-          </select>
+          <div class="pickup-time-label" data-i18n="pickupDate">Data di ritiro</div>
+          <div class="calendar-picker" data-calendar-picker="pickup">
+            <div class="calendar-heading">
+              <button type="button" class="calendar-nav" data-calendar-shift="-1" aria-label="Mese precedente">‹</button>
+              <strong class="calendar-month" aria-live="polite"></strong>
+              <button type="button" class="calendar-nav" data-calendar-shift="1" aria-label="Mese successivo">›</button>
+            </div>
+            <div class="calendar-grid" role="group" aria-label="Seleziona una data"></div>
+            <p class="calendar-note" aria-live="polite"></p>
+          </div>
+          <input id="pickup-date" type="hidden">
 
-          <label for="pickup-time" data-i18n="pickupTime">Orario di ritiro (18:30–23:00)</label>
-          <input id="pickup-time" type="time" min="18:30" max="23:00" step="900" required>
+          <div class="pickup-time-label" data-i18n="pickupTime">Orario di ritiro (18:30–23:00)</div>
+          <input id="pickup-time" type="hidden">
+          <div id="pickup-time-slots" class="pickup-time-slots" role="group" aria-label="Seleziona l'orario di ritiro"></div>
 
           <label for="order-notes" data-i18n="orderNotes">Note aggiuntive</label>
           <textarea id="order-notes"
