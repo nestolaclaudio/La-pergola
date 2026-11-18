@@ -1,4 +1,4 @@
-
+﻿
 const WHATSAPP_NUMBER = "393206323345";
 const PHONE_NUMBER = "+390832655300";
 const BUSINESS_TIME_ZONE = "Europe/Rome";
@@ -55,6 +55,7 @@ const categoryOrder = [
 const menu = [
   // LE CLASSICHE
   {id:1,name:"Margherita",category:"Le classiche",price:5.50,description:"Pomodoro, mozzarella, olive, origano"},
+  {id:104,name:"Tipo Piadina",category:"Le classiche",price:4,description:"Base tipo piadina"},
   {id:2,name:"Diavola",category:"Le classiche",price:6.50,description:"Pomodoro, mozzarella, salamino piccante, origano"},
   {id:3,name:"Napoli",category:"Le classiche",price:7,description:"Pomodoro, mozzarella, capperi, alici, olive nere, origano"},
   {id:4,name:"Bufalina",category:"Le classiche",price:7,description:"Pomodoro, mozzarella di bufala, basilico"},
@@ -178,6 +179,17 @@ const removableIngredientsByProduct = Object.fromEntries(menu
         !/^(?:impasto\s+(?:integrale|ai\s+cereali)|doppio\s+impasto)$/i.test(ingredient) &&
         !/^(?:pomodoro|mozzarella)(?:$|\s)/i.test(ingredient))
   ]));
+removableIngredientsByProduct[20] = [];
+removableIngredientsByProduct[6] = ["Salsa kebab"];
+removableIngredientsByProduct[10] = ["Origano"];
+removableIngredientsByProduct[101] = ["Origano"];
+removableIngredientsByProduct[102] = [];
+removableIngredientsByProduct[103] = [];
+removableIngredientsByProduct[104] = [];
+removableIngredientsByProduct[12] = [];
+removableIngredientsByProduct[15] = [];
+removableIngredientsByProduct[17] = [];
+removableIngredientsByProduct[21] = [];
 removableIngredientsByProduct[2] = removableIngredientsByProduct[2]
   .filter(ingredient => !/^salamino piccante$/i.test(ingredient));
 removableIngredientsByProduct[26] = ["Rucola", "Stracciatella"];
@@ -186,62 +198,176 @@ removableIngredientsByProduct[100] = [];
 
 // Listino delle aggiunte fornito dal locale. Prezzi in euro.
 const paidExtras = [
-  { id: "rucola", name: "Rucola", price: 0.50 },
-  { id: "pomodorini", name: "Pomodorini", price: 0.50 },
-  { id: "cipolla", name: "Cipolla", price: 0.50 },
+  { id: "aglio", name: "Aglio", price: 0.50 },
+  { id: "alici", name: "Alici", price: 1 },
+  { id: "basilico", name: "Basilico", price: 0.50 },
+  { id: "bresaola", name: "Bresaola", price: 3 },
+  { id: "bufala-sostituzione", name: "Bufala al posto della mozzarella", price: 2.50, exclusiveGroup: "bufala" },
+  { id: "bufala-extra", name: "Bufala intera extra", price: 3.50, exclusiveGroup: "bufala" },
+  { id: "burratina-affumicata", name: "Burratina affumicata", price: 2.50 },
+  { id: "burratina-bianca", name: "Burratina bianca", price: 2.50 },
+  { id: "calamari", name: "Calamari", price: 2 },
+  { id: "capocollo", name: "Capocollo", price: 2 },
   { id: "capperi", name: "Capperi", price: 0.50 },
+  { id: "carciofi", name: "Carciofi", price: 1 },
+  { id: "cipolla", name: "Cipolla", price: 0.50 },
+  { id: "cipolla-caramellata", name: "Cipolla caramellata", price: 1.50 },
+  { id: "fiordilatte-sostituzione", name: "Fior di latte al posto della mozzarella", price: 1 },
+  { id: "datterino-giallo", name: "Datterino giallo", price: 1.50 },
+  { id: "doppia-mozzarella", name: "Doppia mozzarella", price: 1 },
+  { id: "emmental", name: "Emmental", price: 1.50 },
+  { id: "friarielli", name: "Friarielli", price: 1.50 },
+  { id: "funghi-naturale", name: "Funghi al naturale", price: 1 },
+  { id: "funghi-freschi", name: "Funghi freschi", price: 1 },
+  { id: "funghi-sottolio", name: "Funghi sott'olio", price: 1 },
+  { id: "porcini", name: "Funghi porcini", price: 3 },
+  { id: "gamberetti", name: "Gamberetti", price: 3 },
+  { id: "gorgonzola", name: "Gorgonzola", price: 1.50 },
+  { id: "grana", name: "Grana", price: 1.50 },
+  { id: "kebab", name: "Kebab", price: 2 },
+  { id: "melanzane", name: "Melanzane", price: 1 },
+  { id: "menta", name: "Menta", price: 0 },
+  { id: "mortadella", name: "Mortadella", price: 1 },
+  { id: "nduja", name: "Nduja", price: 2.50 },
+  { id: "no-lattosio", name: "No lattosio", price: 2 },
+  { id: "noci", name: "Noci", price: 1 },
+  { id: "olio-piccante", name: "Olio piccante", price: 0 },
   { id: "olive-nere", name: "Olive nere", price: 0.50 },
   { id: "olive-verdi", name: "Olive verdi", price: 0.50 },
-  { id: "basilico", name: "Basilico", price: 0.50 },
-  { id: "ungherese", name: "Ungherese", price: 1 },
-  { id: "ventricina", name: "Ventricina", price: 1 },
-  { id: "mortadella", name: "Mortadella", price: 1 },
-  { id: "salamino-piccante", name: "Salamino piccante", price: 1 },
-  { id: "noci", name: "Noci", price: 1 },
-  { id: "wurstel", name: "Wurstel", price: 1 },
-  { id: "prosciutto-cotto", name: "Prosciutto cotto", price: 1 },
-  { id: "funghi", name: "Funghi", price: 1 },
-  { id: "carciofi", name: "Carciofi", price: 1 },
-  { id: "funghi-sottolio", name: "Funghi sott’olio", price: 1 },
-  { id: "patatine", name: "Patatine", price: 1 },
-  { id: "radicchio", name: "Radicchio", price: 1 },
-  { id: "peperoni", name: "Peperoni", price: 1 },
-  { id: "melanzane", name: "Melanzane", price: 1 },
-  { id: "surimi", name: "Surimi", price: 1 },
-  { id: "uovo", name: "Uovo", price: 1 },
-  { id: "alici", name: "Alici", price: 1 },
-  { id: "pomodori-secchi", name: "Pomodori secchi", price: 1 },
-  { id: "panna", name: "Panna", price: 1 },
-  { id: "calamari", name: "Calamari", price: 2 },
-  { id: "scamorza-affumicata", name: "Scamorza affumicata", price: 1.5 },
-  { id: "emmental", name: "Emmental", price: 1.5 },
-  { id: "grana", name: "Grana", price: 1.5 },
-  { id: "mozzarella-fresca", name: "Mozzarella fresca", price: 1.5 },
-  { id: "gorgonzola", name: "Gorgonzola", price: 1.5 },
-  { id: "salsiccia-fresca", name: "Salsiccia fresca", price: 1.5 },
-  { id: "mozzarella-senza-lattosio", name: "Mozzarella senza lattosio", price: 2 },
-  { id: "provolone-affumicato", name: "Provolone affumicato", price: 2 },
-  { id: "capocollo", name: "Capocollo", price: 2 },
   { id: "pancetta", name: "Pancetta", price: 2 },
-  { id: "stracciatella", name: "Stracciatella", price: 2 },
-  { id: "kebab", name: "Kebab", price: 2 },
-  { id: "tonno", name: "Tonno", price: 2 },
-  { id: "nduja", name: "’Nduja", price: 2 },
-  { id: "bufala-sostituzione", name: "Bufala al posto della mozzarella", price: 2, exclusiveGroup: "bufala" },
-  { id: "bufala-extra", name: "Bufala extra", price: 3.5, exclusiveGroup: "bufala" },
-  { id: "prosciutto-crudo", name: "Prosciutto crudo", price: 2.5 },
-  { id: "pesto-pistacchio", name: "Pesto di pistacchio", price: 3 },
-  { id: "burratina-affumicata", name: "Burratina affumicata", price: 3 },
-  { id: "burratina-bianca", name: "Burratina bianca", price: 3 },
-  { id: "pomodori-scattarisciati", name: "Pomodori scattarisciati", price: 3 },
-  { id: "speck", name: "Speck", price: 2.5 },
+  { id: "panna", name: "Panna", price: 1 },
+  { id: "passata-zucchine", name: "Passata di zucchine", price: 1 },
+  { id: "patatine", name: "Patatine", price: 1 },
+  { id: "peperoni", name: "Peperoni", price: 1 },
   { id: "pezzetti-cavallo", name: "Pezzetti di cavallo", price: 3 },
-  { id: "bresaola", name: "Bresaola", price: 3 },
-  { id: "porcini", name: "Porcini", price: 3 },
-  { id: "gamberetti", name: "Gamberetti", price: 3 },
-  { id: "cipolla-caramellata", name: "Cipolla caramellata", price: 2 },
-  { id: "friarielli", name: "Friarielli", price: 2 },
-  { id: "datterino-giallo", name: "Datterino giallo", price: 2 }
+  { id: "pistacchio", name: "Pistacchio", price: 2.50 },
+  { id: "pomodori-scattarisciati", name: "Pomodori scattarisciati", price: 2.50 },
+  { id: "pomodori-secchi", name: "Pomodori secchi", price: 1 },
+  { id: "pomodorini", name: "Pomodorini", price: 1 },
+  { id: "pomodoro-fette", name: "Pomodoro a fette", price: 0.50 },
+  { id: "prosciutto-cotto", name: "Prosciutto cotto", price: 1 },
+  { id: "prosciutto-crudo", name: "Prosciutto crudo", price: 2.50 },
+  { id: "provola-piccante", name: "Provola piccante", price: 1 },
+  { id: "provola-affumicata", name: "Provola affumicata", price: 2 },
+  { id: "radicchio", name: "Radicchio", price: 1 },
+  { id: "rucola", name: "Rucola", price: 0.50 },
+  { id: "ungherese", name: "Salame ungherese", price: 1 },
+  { id: "salamino-piccante", name: "Salamino piccante", price: 1 },
+  { id: "salsiccia-fresca", name: "Salsiccia fresca", price: 1.50 },
+  { id: "scamorza", name: "Scamorza", price: 1.50 },
+  { id: "speck", name: "Speck", price: 2.50 },
+  { id: "stracciatella", name: "Stracciatella", price: 2 },
+  { id: "surimi", name: "Surimi", price: 1 },
+  { id: "tonno", name: "Tonno", price: 2 },
+  { id: "uovo", name: "Uovo", price: 1 },
+  { id: "ventricina", name: "Ventricina", price: 1 },
+  { id: "wurstel", name: "Wurstel", price: 1 },
+  { id: "zucchina-grattugiata", name: "Zucchina grattugiata", price: 1 }
+];
+
+const pucciaExtras = [
+  { id: "alici", name: "Alici", price: 0.50 },
+  { id: "bresaola", name: "Bresaola", price: 1 },
+  { id: "bufala", name: "Bufala", price: 2 },
+  { id: "burratina-affumicata", name: "Burratina affumicata", price: 2.50 },
+  { id: "burratina-bianca", name: "Burratina bianca", price: 2.50 },
+  { id: "capocollo", name: "Capocollo", price: 1 },
+  { id: "capperi", name: "Capperi", price: 0.50 },
+  { id: "carciofi", name: "Carciofi", price: 0.50 },
+  { id: "cipolla", name: "Cipolla", price: 0.50 },
+  { id: "cipolla-caramellata", name: "Cipolla caramellata", price: 1 },
+  { id: "datterino-giallo", name: "Datterino giallo", price: 1 },
+  { id: "emmental", name: "Emmental", price: 0.50 },
+  { id: "friarielli", name: "Friarielli", price: 1 },
+  { id: "funghi-naturale", name: "Funghi al naturale", price: 0.50 },
+  { id: "funghi-freschi", name: "Funghi freschi", price: 0.50 },
+  { id: "funghi-sottolio", name: "Funghi sott'olio", price: 0.50 },
+  { id: "galbanino", name: "Galbanino", price: 0.50 },
+  { id: "gorgonzola", name: "Gorgonzola", price: 0.50 },
+  { id: "grana", name: "Grana", price: 0.50 },
+  { id: "insalata", name: "Insalata", price: 0 },
+  { id: "ketchup", name: "Ketchup", price: 0 },
+  { id: "maionese", name: "Maionese", price: 0 },
+  { id: "melanzane", name: "Melanzane", price: 0.50 },
+  { id: "menta", name: "Menta", price: 0 },
+  { id: "mortadella", name: "Mortadella", price: 0.50 },
+  { id: "mozzarella-fresca", name: "Mozzarella fresca", price: 1 },
+  { id: "nduja", name: "Nduja", price: 1 },
+  { id: "olio-piccante", name: "Olio piccante", price: 0 },
+  { id: "olive-nere", name: "Olive nere", price: 0.50 },
+  { id: "olive-verdi", name: "Olive verdi", price: 0.50 },
+  { id: "pancetta", name: "Pancetta", price: 1 },
+  { id: "patatine", name: "Patatine", price: 0.50 },
+  { id: "peperoni", name: "Peperoni", price: 0.50 },
+  { id: "pistacchio", name: "Pistacchio", price: 1.50 },
+  { id: "pomodori-secchi", name: "Pomodori secchi", price: 0.50 },
+  { id: "pomodorini", name: "Pomodorini", price: 0.50 },
+  { id: "pomodoro-fette", name: "Pomodoro a fette", price: 0.50 },
+  { id: "prosciutto-cotto", name: "Prosciutto cotto", price: 0.50 },
+  { id: "prosciutto-crudo", name: "Prosciutto crudo", price: 1 },
+  { id: "provola-piccante", name: "Provola piccante", price: 1 },
+  { id: "provola-affumicata", name: "Provola affumicata", price: 1 },
+  { id: "rucola", name: "Rucola", price: 0.50 },
+  { id: "ungherese", name: "Salame ungherese", price: 0.50 },
+  { id: "salamino-piccante", name: "Salamino piccante", price: 0.50 },
+  { id: "scamorza", name: "Scamorza", price: 0.50 },
+  { id: "speck", name: "Speck", price: 1 },
+  { id: "stracciatella", name: "Stracciatella", price: 1 },
+  { id: "tonno", name: "Tonno", price: 1 },
+  { id: "ventricina", name: "Ventricina", price: 0.50 },
+  { id: "wurstel", name: "Wurstel", price: 0.50 }
+];
+
+const tipoPiadinaExtras = [
+  { id: "tp-aglio", name: "Aglio", price: 0.50 },
+  { id: "tp-basilico", name: "Basilico", price: 0.50 },
+  { id: "tp-bresaola", name: "Bresaola", price: 3 },
+  { id: "tp-bufala", name: "Bufala", price: 3.50 },
+  { id: "tp-burratina-affumicata", name: "Burratina affumicata", price: 2.50 },
+  { id: "tp-burratina-bianca", name: "Burratina bianca", price: 2.50 },
+  { id: "tp-capocollo", name: "Capocollo", price: 2 },
+  { id: "tp-capperi", name: "Capperi", price: 0.50 },
+  { id: "tp-carciofi", name: "Carciofi", price: 1 },
+  { id: "tp-cipolla", name: "Cipolla", price: 0.50 },
+  { id: "tp-cipolla-caramellata", name: "Cipolla caramellata", price: 1.50 },
+  { id: "tp-datterino-giallo", name: "Datterino giallo", price: 1.50 },
+  { id: "tp-emmental", name: "Emmental", price: 1.50 },
+  { id: "tp-friarielli", name: "Friarielli", price: 1.50 },
+  { id: "tp-funghi-naturale", name: "Funghi al naturale", price: 1 },
+  { id: "tp-funghi-freschi", name: "Funghi freschi", price: 1 },
+  { id: "tp-funghi-sottolio", name: "Funghi sott'olio", price: 1 },
+  { id: "tp-gorgonzola", name: "Gorgonzola", price: 1.50 },
+  { id: "tp-grana", name: "Grana", price: 1.50 },
+  { id: "tp-melanzane", name: "Melanzane", price: 1 },
+  { id: "tp-menta", name: "Menta", price: 0 },
+  { id: "tp-mortadella", name: "Mortadella", price: 1 },
+  { id: "tp-nduja", name: "Nduja", price: 2.50 },
+  { id: "tp-noci", name: "Noci", price: 1 },
+  { id: "tp-olio-piccante", name: "Olio piccante", price: 0 },
+  { id: "tp-olive-nere", name: "Olive nere", price: 0.50 },
+  { id: "tp-olive-verdi", name: "Olive verdi", price: 0.50 },
+  { id: "tp-pancetta", name: "Pancetta", price: 2 },
+  { id: "tp-patatine", name: "Patatine", price: 1 },
+  { id: "tp-peperoni", name: "Peperoni", price: 1 },
+  { id: "tp-pistacchio", name: "Pistacchio", price: 2.50 },
+  { id: "tp-pomodori-secchi", name: "Pomodori secchi", price: 1 },
+  { id: "tp-pomodorini", name: "Pomodorini", price: 1 },
+  { id: "tp-pomodoro-fette", name: "Pomodoro a fette", price: 0.50 },
+  { id: "tp-prosciutto-cotto", name: "Prosciutto cotto", price: 1 },
+  { id: "tp-prosciutto-crudo", name: "Prosciutto crudo", price: 2.50 },
+  { id: "tp-provola-piccante", name: "Provola piccante", price: 1 },
+  { id: "tp-provola-affumicata", name: "Provola affumicata", price: 2 },
+  { id: "tp-radicchio", name: "Radicchio", price: 1 },
+  { id: "tp-rucola", name: "Rucola", price: 0.50 },
+  { id: "tp-ungherese", name: "Salame ungherese", price: 1 },
+  { id: "tp-salamino-piccante", name: "Salamino piccante", price: 1 },
+  { id: "tp-scamorza", name: "Scamorza", price: 1.50 },
+  { id: "tp-speck", name: "Speck", price: 2.50 },
+  { id: "tp-stracciatella", name: "Stracciatella", price: 2 },
+  { id: "tp-tonno", name: "Tonno", price: 2 },
+  { id: "tp-ventricina", name: "Ventricina", price: 1 },
+  { id: "tp-wurstel", name: "Wurstel", price: 1 },
+  { id: "tp-zucchina-grattugiata", name: "Zucchina grattugiata", price: 1 }
 ];
 
 const translations = {
@@ -338,7 +464,7 @@ const translations = {
     baseRossaNoMozzarella: "Base rossa senza mozzarella (−€0,50)",
     basePiadinaIntegrale: "Base piadina",
     removeIngredientsTitle: "Togli ingredienti",
-    removeIngredientsHint: "Seleziona gli ingredienti da togliere. Nessuna variazione di prezzo.",
+    removeIngredientsHint: "Seleziona gli ingredienti da togliere; il prezzo verrà modificato da noi al ritiro.",
     addIngredientsTitle: "Aggiungi extra",
     withoutIngredients: "Senza",
     extraPrice: "+{price}",
@@ -444,7 +570,7 @@ const translations = {
     baseRossaNoMozzarella: "Red base without mozzarella (−€0.50)",
     basePiadinaIntegrale: "Piadina base",
     removeIngredientsTitle: "Remove ingredients",
-    removeIngredientsHint: "Select ingredients to remove. The price stays the same.",
+    removeIngredientsHint: "Select the ingredients to remove; we will adjust the price when you pick up your order.",
     addIngredientsTitle: "Add extras",
     withoutIngredients: "Without",
     extraPrice: "+{price}",
@@ -473,6 +599,7 @@ const categoryTranslations = {
 
 const englishMenu = {
   1:["Margherita","Tomato, mozzarella, olives and oregano"],
+  104:["Piadina-Style Base","Piadina-style pizza base"],
   2:["Diavola","Tomato, mozzarella, spicy salami and oregano"],
   3:["Napoli","Tomato, mozzarella, capers, anchovies, black olives and oregano"],
   4:["Bufalina","Tomato, buffalo mozzarella and basil"],
@@ -857,7 +984,7 @@ function renderProducts() {
         <p>${escapeHTML(productDescription(item))}</p>
         ${isPizza(item) ? `
           ${item.id !== 27 ? `
-          <select id="base-choice-${item.id}" class="variant-select base-card-select"
+          <select id="base-choice-${item.id}" class="variant-select base-card-select"${item.id === 104 ? " hidden" : ""}
             aria-label="${escapeHTML(t("baseLabel"))}"
             onchange="updateProductPrice(${item.id})">
             ${baseOptions(item)}
@@ -948,7 +1075,7 @@ function doughOptions(item) {
 }
 
 function defaultBase(item) {
-  if (item.id === 26) return "piadina-integrale";
+  if ([26, 104].includes(item.id)) return "piadina-integrale";
   const firstIngredient = item.description
     .split(",")
     .map(ingredient => ingredient.trim())
@@ -970,6 +1097,7 @@ function baseOptions(item) {
   const pizzasWithoutRedBase = [4, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37];
   if (!pizzasWithoutRedBase.includes(item.id)) choices.push("rossa-senza-mozzarella");
   if (item.id === 26) choices.unshift("piadina-integrale");
+  if (item.id === 104) return `<option value="piadina-integrale" selected>${escapeHTML(t("basePiadinaIntegrale"))} ${escapeHTML(t("baseDefaultLabel"))}</option>`;
   const labels = {
     "piadina-integrale": "basePiadinaIntegrale",
     "margherita-bufala": "baseMargheritaBufala",
@@ -988,7 +1116,7 @@ function baseOptions(item) {
 }
 
 function baseSurcharge(item, base) {
-  if (item?.id === 26 && ["bianca", "margherita"].includes(base)) return 1;
+  if ([26].includes(item?.id) && ["bianca", "margherita"].includes(base)) return 1;
   return base === "rossa-senza-mozzarella" ? -0.5 : 0;
 }
 
@@ -1023,6 +1151,11 @@ let customizationItem = null;
 let customizationDough = "";
 let customizationBase = "";
 
+function extrasForCustomization() {
+  if (customizationItem?.id === 104) return tipoPiadinaExtras;
+  return customizationItem?.category === "Le pucce" ? pucciaExtras : paidExtras;
+}
+
 function openCustomization(id) {
   if (!isCartBuildingOpen()) return;
   customizationItem = menu.find(product => product.id === id);
@@ -1038,6 +1171,8 @@ function openCustomization(id) {
   const customizationBasePrice = document.getElementById("customization-base-price");
   customizationBasePrice.hidden = customizationItem.id === 100;
   customizationBasePrice.textContent = `${t("basePrice")}: ${formatPrice(customizationItem.price + doughSurcharge(customizationItem, customizationDough) + baseSurcharge(customizationItem, customizationBase))}`;
+  const removalSection = document.querySelector(".removal-section");
+  removalSection.hidden = customizationItem.category === "Le pucce" || customizationItem.id === 104;
   const ingredients = removableIngredientsByProduct[customizationItem.id] || [];
   document.getElementById("removable-ingredients").innerHTML = ingredients.map((ingredient, index) => `
     <label class="customization-option">
@@ -1045,7 +1180,7 @@ function openCustomization(id) {
       <span>${escapeHTML(ingredient)}</span>
     </label>
   `).join("");
-  document.getElementById("customization-options").innerHTML = paidExtras.map(extra => `
+  document.getElementById("customization-options").innerHTML = extrasForCustomization().map(extra => `
     <label class="customization-option">
       <input type="checkbox" value="${escapeHTML(extra.id)}" onchange="updateCustomizationTotal('${escapeHTML(extra.id)}', this.checked)">
       <span>${escapeHTML(extra.name)}</span>
@@ -1058,9 +1193,10 @@ function openCustomization(id) {
 
 function updateCustomizationTotal(changedExtraId, isChecked) {
   if (!customizationItem) return;
-  const changedExtra = paidExtras.find(extra => extra.id === changedExtraId);
+  const availableExtras = extrasForCustomization();
+  const changedExtra = availableExtras.find(extra => extra.id === changedExtraId);
   if (isChecked && changedExtra?.exclusiveGroup) {
-    paidExtras
+    availableExtras
       .filter(extra => extra.exclusiveGroup === changedExtra.exclusiveGroup && extra.id !== changedExtraId)
       .forEach(extra => {
         const checkbox = document.querySelector(`#customization-options input[value="${CSS.escape(extra.id)}"]`);
@@ -1070,7 +1206,7 @@ function updateCustomizationTotal(changedExtraId, isChecked) {
   const selected = [...document.querySelectorAll("#customization-options input:checked")];
   document.getElementById("confirm-customization").disabled = customizationItem.id === 100 && selected.length === 0;
   const extrasTotal = selected.reduce((sum, input) =>
-    sum + (paidExtras.find(extra => extra.id === input.value)?.price || 0), 0);
+    sum + (availableExtras.find(extra => extra.id === input.value)?.price || 0), 0);
   const customizationTotal = document.getElementById("customization-total");
   customizationTotal.textContent = customizationItem.id === 100 && extrasTotal === 0
     ? ""
@@ -1080,7 +1216,7 @@ function updateCustomizationTotal(changedExtraId, isChecked) {
 function confirmCustomization() {
   if (!customizationItem || !isCartBuildingOpen()) return;
   const extras = [...document.querySelectorAll("#customization-options input:checked")]
-    .map(input => paidExtras.find(extra => extra.id === input.value))
+    .map(input => extrasForCustomization().find(extra => extra.id === input.value))
     .filter(Boolean);
   if (customizationItem.id === 100 && extras.length === 0) return;
   const removedIngredients = [...document.querySelectorAll("#removable-ingredients input:checked")]
@@ -1426,3 +1562,24 @@ renderBookingTimes();
 applyLanguage();
 updateOrderingAvailability();
 window.setInterval(updateOrderingAvailability, 60 * 1000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
