@@ -394,6 +394,43 @@ button, a {
   background: #424d32;
 }
 
+.cart-toast {
+  position: fixed;
+  z-index: 2147483647;
+  left: 50%;
+  bottom: 24px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--olive);
+  color: var(--white);
+  box-shadow: 0 5px 18px rgba(48, 44, 37, .22);
+  font-weight: 700;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 12px);
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+.cart-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (max-width: 600px) {
+  .cart-toast {
+    top: calc(72px + env(safe-area-inset-top, 0px));
+    bottom: auto;
+    width: max-content;
+    max-width: calc(100vw - 32px);
+    padding: 11px 16px;
+    text-align: center;
+  }
+
+  .cart-toast.is-visible {
+    transform: translate(-50%, 0);
+  }
+}
+
 .customize-button {
   background: transparent;
   color: var(--olive);
@@ -515,6 +552,29 @@ button, a {
 .booking-section {
   padding: 38px 6%;
   background: rgba(255, 253, 248, .55);
+}
+
+.booking-hours-note {
+  max-width: 640px;
+  margin: 0 auto 14px;
+  padding: 16px 20px;
+  border: 1px solid var(--beige);
+  border-left: 4px solid var(--olive);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--dark);
+  text-align: center;
+}
+
+.booking-hours-note a {
+  color: var(--olive);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.booking-hours-note a:hover {
+  color: #4b5539;
 }
 
 .booking-panel {

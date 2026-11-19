@@ -428,6 +428,7 @@ const translations = {
     cartDisclaimer: "L'ordine verrà preparato come messaggio WhatsApp. L'invio non è automatico: dovrai confermarlo tu.",
     footerTagline: "Pizzeria • Tradizione • Passione",
     addToCart: "+ AGGIUNGI AL CARRELLO",
+    cartItemAdded: "Aggiunto al carrello",
     customizeProduct: "PERSONALIZZA",
     recommendationEyebrow: "UN CONSIGLIO PER IL TUO ORDINE",
     recommendationTitle: "Ti va di aggiungere qualcosa da bere?",
@@ -534,6 +535,7 @@ const translations = {
     cartDisclaimer: "Your order will be prepared as a WhatsApp message. It will not be sent automatically: you will need to confirm it.",
     footerTagline: "Pizzeria • Tradition • Passion",
     addToCart: "+ ADD TO CART",
+    cartItemAdded: "Added to cart",
     customizeProduct: "CUSTOMIZE",
     recommendationEyebrow: "A LITTLE SUGGESTION FOR YOUR ORDER",
     recommendationTitle: "Would you like to add a drink?",
@@ -704,6 +706,16 @@ const englishMenu = {
 };
 
 let cart = {};
+let cartToastTimeout;
+
+function showCartToast() {
+  const toast = document.getElementById("cart-toast");
+  if (!toast) return;
+  toast.textContent = `✓ ${t("cartItemAdded")}`;
+  toast.classList.add("is-visible");
+  clearTimeout(cartToastTimeout);
+  cartToastTimeout = setTimeout(() => toast.classList.remove("is-visible"), 1800);
+}
 let activeCategory = "Tutte";
 let currentLanguage = "it";
 try {
@@ -1267,6 +1279,7 @@ function addToCart(id, variant = "", extras = [], dough = "", removedIngredients
 
   cart[cartKey].quantity++;
   renderCart();
+  showCartToast();
 }
 
 function changeQuantity(cartKey, change) {
