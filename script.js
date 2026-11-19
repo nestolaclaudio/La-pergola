@@ -55,7 +55,7 @@ const categoryOrder = [
 const menu = [
   // LE CLASSICHE
   {id:1,name:"Margherita",category:"Le classiche",price:5.50,description:"Pomodoro, mozzarella, olive, origano"},
-  {id:104,name:"Tipo Piadina",category:"Le classiche",price:4,description:"Base tipo piadina"},
+  {id:104,name:"Tipo Piadina",category:"Le classiche",price:3,description:"Base tipo piadina"},
   {id:2,name:"Diavola",category:"Le classiche",price:6.50,description:"Pomodoro, mozzarella, salamino piccante, origano"},
   {id:3,name:"Napoli",category:"Le classiche",price:7,description:"Pomodoro, mozzarella, capperi, alici, olive nere, origano"},
   {id:4,name:"Bufalina",category:"Le classiche",price:7,description:"Pomodoro, mozzarella di bufala, basilico"},
@@ -340,6 +340,7 @@ const tipoPiadinaExtras = [
   { id: "tp-grana", name: "Grana", price: 1.50 },
   { id: "tp-melanzane", name: "Melanzane", price: 1 },
   { id: "tp-menta", name: "Menta", price: 0 },
+  { id: "tp-mozzarella-fette", name: "Mozzarella a fette", price: 2 },
   { id: "tp-mortadella", name: "Mortadella", price: 1 },
   { id: "tp-nduja", name: "Nduja", price: 2.50 },
   { id: "tp-noci", name: "Noci", price: 1 },
@@ -1026,7 +1027,7 @@ function renderProducts() {
             <option value="cocco">${currentLanguage === "en" ? "Coconut" : "Cocco"}</option>
           </select>
         ` : ""}
-        ${item.id !== 100 ? `<div id="product-price-${item.id}" class="product-price">${formatPrice(item.price)}</div>` : ""}
+        ${![100, 104].includes(item.id) ? `<div id="product-price-${item.id}" class="product-price">${formatPrice(item.price)}</div>` : ""}
         ${isCustomizable(item) ? `
           ${item.id !== 100 ? `
             <button class="add-button" onclick="addProductToCart(${item.id})">
@@ -1181,7 +1182,7 @@ function openCustomization(id) {
     : "";
   document.getElementById("customization-title").textContent = productName(customizationItem);
   const customizationBasePrice = document.getElementById("customization-base-price");
-  customizationBasePrice.hidden = customizationItem.id === 100;
+  customizationBasePrice.hidden = [100, 104].includes(customizationItem.id);
   customizationBasePrice.textContent = `${t("basePrice")}: ${formatPrice(customizationItem.price + doughSurcharge(customizationItem, customizationDough) + baseSurcharge(customizationItem, customizationBase))}`;
   const removalSection = document.querySelector(".removal-section");
   removalSection.hidden = customizationItem.category === "Le pucce" || customizationItem.id === 104;
