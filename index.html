@@ -183,6 +183,9 @@
         <a id="call-us" class="whatsapp-button call-button" href="tel:+390832655300" hidden>
           <span data-i18n="callUs">CHIAMACI</span>
         </a>
+        <p id="cart-phone-notice" class="cart-phone-notice" data-i18n="cartPhoneNotice" hidden>
+          Nella fascia oraria che va dalle 19:00 a 00:00 la funzione invia a WhatsApp è disattivata.
+        </p>
 
         <p class="cart-disclaimer">
           <span data-i18n="cartDisclaimer">L'ordine verrà preparato come messaggio WhatsApp.
@@ -224,6 +227,15 @@
         <strong><span data-i18n="customizationTotal">Totale</span>: <span id="customization-total"></span></strong>
         <button id="confirm-customization" class="add-button" type="button" data-i18n="confirmCustomization">AGGIUNGI AL CARRELLO</button>
       </div>
+    </div>
+  </dialog>
+
+  <dialog id="booking-phone-dialog" class="recommendation-dialog" aria-labelledby="booking-phone-title">
+    <div class="recommendation-content booking-phone-content">
+      <p class="eyebrow" data-i18n="bookingPhoneEyebrow">PRENOTAZIONE TELEFONICA</p>
+      <h2 id="booking-phone-title" data-i18n="bookingPhoneTitle">Per prenotare un tavolo oggi dopo le 19:00, è necessario telefonare.</h2>
+      <a class="whatsapp-button" href="tel:+390832655300"><span data-i18n="callUs">CHIAMACI</span></a>
+      <button id="close-booking-phone" class="skip-recommendation" type="button" data-i18n="closeDialog">CHIUDI</button>
     </div>
   </dialog>
 

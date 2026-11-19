@@ -26,10 +26,12 @@ function getContactAvailability(now = new Date()) {
   };
 }
 
-function bookingRequiresPhone(dateValue, availability = getContactAvailability()) {
+function bookingRequiresPhone(dateValue, timeValue, availability = getContactAvailability()) {
   return Boolean(dateValue)
     && dateValue === availability.businessDate
-    && availability.minutesSinceMidnight > 19 * 60;
+    && /^\d{2}:\d{2}$/.test(timeValue || "")
+    && Number(timeValue.slice(0, 2)) * 60 + Number(timeValue.slice(3, 5)) >= 19 * 60
+    && availability.minutesSinceMidnight >= 19 * 60;
 }
 
 function isWhatsAppOrderingOpen() {
@@ -413,6 +415,7 @@ const translations = {
     orderWhatsapp: "ORDINA SU WHATSAPP",
     callUs: "CHIAMACI",
     orderingClosed: "ORDINI ONLINE DISPONIBILI DALLE 9:00 ALLE 19:00",
+    cartPhoneNotice: "Nella fascia oraria che va dalle 19:00 a 00:00 la funzione invia a WhatsApp è disattivata.",
     bookingEyebrow: "CLICCA E PRENOTA UN TAVOLO",
     bookingTitle: "Richiesta di prenotazione",
     bookingIntro: "Compila i tuoi dati: la richiesta verrà inviata su WhatsApp e sarà confermata dal ristorante.",
@@ -426,6 +429,9 @@ const translations = {
     bookingHeading: "RICHIESTA DI PRENOTAZIONE - LA PERGOLA",
     bookingSent: "Attendo conferma dal ristorante.",
     bookingClosedDate: "Siamo chiusi in questa data. Scegli un altro giorno.",
+    bookingPhoneEyebrow: "PRENOTAZIONE TELEFONICA",
+    bookingPhoneTitle: "Per prenotare un tavolo per stasera, è necessario telefonare",
+    closeDialog: "CHIUDI",
     cartDisclaimer: "L'ordine verrà preparato come messaggio WhatsApp. L'invio non è automatico: dovrai confermarlo tu.",
     footerTagline: "Pizzeria • Tradizione • Passione",
     addToCart: "+ AGGIUNGI AL CARRELLO",
@@ -520,6 +526,7 @@ const translations = {
     orderWhatsapp: "ORDER ON WHATSAPP",
     callUs: "CALL US",
     orderingClosed: "ONLINE ORDERS AVAILABLE FROM 9:00 AM TO 7:00 PM",
+    cartPhoneNotice: "From 7:00 PM to midnight, the Send to WhatsApp feature is disabled.",
     bookingEyebrow: "CLICK TO BOOK A TABLE",
     bookingTitle: "Booking request",
     bookingIntro: "Enter your details: your request will be sent on WhatsApp and confirmed by the restaurant.",
@@ -533,6 +540,9 @@ const translations = {
     bookingHeading: "BOOKING REQUEST - LA PERGOLA",
     bookingSent: "Awaiting confirmation from the restaurant.",
     bookingClosedDate: "We are closed on this date. Please choose another day.",
+    bookingPhoneEyebrow: "PHONE BOOKINGS",
+    bookingPhoneTitle: "To book a table today after 7:00 PM, please call the restaurant.",
+    closeDialog: "CLOSE",
     cartDisclaimer: "Your order will be prepared as a WhatsApp message. It will not be sent automatically: you will need to confirm it.",
     footerTagline: "Pizzeria • Tradition • Passion",
     addToCart: "+ ADD TO CART",
@@ -773,6 +783,13 @@ document.getElementById("booking-time-slots").addEventListener("click", event =>
   if (!slot) return;
   bookingTimeInput.value = slot.dataset.bookingTime;
   renderBookingTimes();
+  if (bookingRequiresPhone(bookingDateInput.value, bookingTimeInput.value)) {
+    document.getElementById("booking-phone-dialog").showModal();
+  }
+});
+
+document.getElementById("close-booking-phone").addEventListener("click", () => {
+  document.getElementById("booking-phone-dialog").close();
 });
 
 function dateOptionLabel(date) {
@@ -1441,8 +1458,8 @@ document.getElementById("order-form").addEventListener("submit", function(event)
 
 document.getElementById("booking-form").addEventListener("submit", function(event) {
   event.preventDefault();
-  if (bookingRequiresPhone(bookingDateInput.value)) {
-    updateOrderingAvailability();
+  if (bookingRequiresPhone(bookingDateInput.value, bookingTimeInput.value)) {
+    document.getElementById("booking-phone-dialog").showModal();
     return;
   }
 
@@ -1526,7 +1543,6 @@ function updateOrderingAvailability() {
   const availability = getContactAvailability();
   const orderingOpen = availability.whatsapp;
   const callAvailable = availability.phone;
-  const bookingCallRequired = bookingRequiresPhone(bookingDateInput.value, availability);
   document.getElementById("cart-items").hidden = false;
   document.querySelector(".cart-total").hidden = false;
   document.querySelector(".cart-panel h2").hidden = false;
@@ -1535,8 +1551,9 @@ function updateOrderingAvailability() {
   document.querySelector(".cart-disclaimer").hidden = !orderingOpen;
   document.getElementById("order-form").hidden = !orderingOpen;
   document.getElementById("call-us").hidden = !callAvailable;
-  document.getElementById("booking-form").hidden = bookingCallRequired;
-  document.getElementById("booking-call").hidden = !bookingCallRequired;
+  document.getElementById("cart-phone-notice").hidden = !callAvailable;
+  document.getElementById("booking-form").hidden = false;
+  document.getElementById("booking-call").hidden = true;
   document.querySelectorAll(".add-button").forEach(button => {
     button.disabled = false;
   });
