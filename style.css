@@ -522,6 +522,14 @@ button, a {
   display: none;
 }
 
+#order-whatsapp[hidden] {
+  display: none;
+}
+
+#booking-whatsapp[hidden] {
+  display: none;
+}
+
 #order-form h3 {
   font-size: 22px;
   margin-bottom: 8px;
@@ -909,11 +917,6 @@ button, a {
   background: rgba(30, 24, 16, .58);
 }
 
-.booking-phone-content .whatsapp-button {
-  display: inline-block;
-  text-decoration: none;
-}
-
 .customization-close {
   float: right;
   border: 0;
@@ -1135,6 +1138,10 @@ button, a {
 .footer p {
   font-size: 13px;
   opacity: .85;
+}
+
+.footer-info a {
+  color: inherit;
 }
 
 .footer-map-preview {

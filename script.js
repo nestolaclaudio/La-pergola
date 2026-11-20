@@ -26,16 +26,14 @@ function getContactAvailability(now = new Date()) {
   };
 }
 
-function bookingRequiresPhone(dateValue, timeValue, availability = getContactAvailability()) {
-  return Boolean(dateValue)
-    && dateValue === availability.businessDate
-    && /^\d{2}:\d{2}$/.test(timeValue || "")
-    && Number(timeValue.slice(0, 2)) * 60 + Number(timeValue.slice(3, 5)) >= 19 * 60
-    && availability.minutesSinceMidnight >= 19 * 60;
+function bookingRequiresPhone(dateValue, availability = getContactAvailability()) {
+  return dateValue === availability.businessDate && availability.phone;
 }
 
-function isWhatsAppOrderingOpen() {
-  return getContactAvailability().whatsapp;
+function isWhatsAppOrderingOpen(pickupDate = pickupDateInput?.value) {
+  const availability = getContactAvailability();
+  if (pickupDate && pickupDate > availability.businessDate) return true;
+  return pickupDate === availability.businessDate && availability.whatsapp;
 }
 
 function isCartBuildingOpen() {
@@ -79,17 +77,17 @@ const menu = [
   {id:20,name:"Pezzetti",category:"Le nostre proposte",price:8,description:"Pomodoro, mozzarella, pezzetti di cavallo"},
   {id:21,name:"Marinara",category:"Le classiche",price:8,description:"Pomodoro, mozzarella, surimi, calamari, origano"},
   {id:23,name:"Vegetariana",category:"Le nostre proposte",price:8.50,description:"Pomodoro, mozzarella, funghi, carciofi, capperi, peperoni, melanzane, olive nere, origano"},
-  {id:26,name:"Scattarisciata",category:"Le nostre proposte",price:10,description:"Impasto integrale, pomodori scattarisciati con cipolla, olive, capperi, stracciatella, rucola"},
+  {id:26,name:"Scattarisciata",category:"Le nostre proposte",price:10,description:"Impasto integrale (se disponibile), pomodori scattarisciati con cipolla, olive, capperi, stracciatella, rucola"},
   {id:27,name:"Nerano",category:"Le nostre proposte",price:11,description:"Passata di zucchina, mozzarella, provola affumicata, zucchina grattugiata, basilico"},
   {id:28,name:"Campana",category:"Le nostre proposte",price:10,description:"Mozzarella di bufala, salsiccia fresca, friarielli"},
-  {id:29,name:"Rustica",category:"Le nostre proposte",price:10,description:"Impasto ai cereali, mozzarella, friarielli, pomodoro secco, olive nere, tarallo sbriciolato"},
-  {id:30,name:"Delicata",category:"Le nostre proposte",price:11,description:"Impasto integrale, mozzarella, gorgonzola, pere, miele, noci"},
+  {id:29,name:"Rustica",category:"Le nostre proposte",price:10,description:"Impasto ai cereali (se disponibile), mozzarella, friarielli, pomodoro secco, olive nere, tarallo sbriciolato"},
+  {id:30,name:"Delicata",category:"Le nostre proposte",price:11,description:"Impasto integrale (se disponibile), mozzarella, gorgonzola, pere, miele, noci"},
   {id:31,name:"Calabrese",category:"Le nostre proposte",price:10,description:"Pomodoro, mozzarella di bufala, ventricina, cipolla caramellata, basilico"},
   {id:32,name:"Calabrese 2.0",category:"Le nostre proposte",price:11,description:"Mozzarella, 'nduja, provola affumicata, cipolla caramellata, basilico"},
   {id:33,name:"Pistacchiona",category:"Le nostre proposte",price:10,description:"Mozzarella di bufala, mortadella, pesto di pistacchio"},
-  {id:34,name:"Lu Sule",category:"Le nostre proposte",price:11,description:"Impasto ai cereali, mozzarella, pancetta, stracciatella, datterini gialli, basilico"},
-  {id:35,name:"Lu Mare",category:"Le nostre proposte",price:11,description:"Impasto integrale, pomodoro, mozzarella, calamari, gamberetti, scorza di limone"},
-  {id:36,name:"Lu Ientu",category:"Le nostre proposte",price:11,description:"Impasto ai cereali, pomodoro, mozzarella, capocollo, burratina affumicata, pomodori secchi, menta"},
+  {id:34,name:"Lu Sule",category:"Le nostre proposte",price:11,description:"Impasto ai cereali (se disponibile), mozzarella, pancetta, stracciatella, datterini gialli, basilico"},
+  {id:35,name:"Lu Mare",category:"Le nostre proposte",price:11,description:"Impasto integrale (se disponibile), pomodoro, mozzarella, calamari, gamberetti, scorza di limone"},
+  {id:36,name:"Lu Ientu",category:"Le nostre proposte",price:11,description:"Impasto ai cereali (se disponibile), pomodoro, mozzarella, capocollo, burratina affumicata, pomodori secchi, menta"},
   {id:37,name:"Disco",category:"Le nostre proposte",price:12,description:"Doppio impasto, pomodoro, mozzarella, funghi, prosciutto cotto, capperi, tonno"},
 
   // LE PUCCE
@@ -415,11 +413,10 @@ const translations = {
     orderWhatsapp: "ORDINA SU WHATSAPP",
     callUs: "CHIAMACI",
     orderingClosed: "ORDINI ONLINE DISPONIBILI DALLE 9:00 ALLE 19:00",
-    cartPhoneNotice: "Nella fascia oraria che va dalle 19:00 a 00:00 la funzione invia a WhatsApp è disattivata.",
+    cartPhoneNotice: "Per gli ordini di oggi, dalle 19:00 alle 00:00 è possibile ordinare solo chiamando.",
     bookingEyebrow: "CLICCA E PRENOTA UN TAVOLO",
     bookingTitle: "Richiesta di prenotazione",
     bookingIntro: "Compila i tuoi dati: la richiesta verrà inviata su WhatsApp e sarà confermata dal ristorante.",
-    bookingPhone: "Telefono",
     bookingDate: "Data",
     bookingDateRequired: "Seleziona una data per la prenotazione.",
     bookingTime: "Orario",
@@ -429,9 +426,6 @@ const translations = {
     bookingHeading: "RICHIESTA DI PRENOTAZIONE - LA PERGOLA",
     bookingSent: "Attendo conferma dal ristorante.",
     bookingClosedDate: "Siamo chiusi in questa data. Scegli un altro giorno.",
-    bookingPhoneEyebrow: "PRENOTAZIONE TELEFONICA",
-    bookingPhoneTitle: "Per prenotare un tavolo per stasera, è necessario telefonare",
-    closeDialog: "CHIUDI",
     cartDisclaimer: "L'ordine verrà preparato come messaggio WhatsApp. L'invio non è automatico: dovrai confermarlo tu.",
     footerTagline: "Pizzeria • Tradizione • Passione",
     addToCart: "+ AGGIUNGI AL CARRELLO",
@@ -440,6 +434,7 @@ const translations = {
     recommendationEyebrow: "UN CONSIGLIO PER IL TUO ORDINE",
     recommendationTitle: "Ti va di aggiungere qualcosa da bere?",
     recommendationText: "Aggiungi una o più bevande o birre al tuo ordine, poi continua su WhatsApp.",
+    backToCart: "TORNA AL CARRELLO",
     addRecommendation: "AGGIUNGI",
     addAnotherRecommendation: "AGGIUNGI UN ALTRO",
     recommendationQuantity: "Nel tuo ordine: {count}",
@@ -460,8 +455,8 @@ const translations = {
     extrasLabel: "Aggiunte",
     doughLabel: "Tipo di impasto",
     doughClassic: "Impasto classico",
-    doughCereals: "Impasto ai cereali",
-    doughWholemeal: "Impasto integrale",
+    doughCereals: "Impasto ai cereali (se disponibile)",
+    doughWholemeal: "Impasto integrale (se disponibile)",
     doughDouble: "Impasto doppio",
     baseLabel: "Tipo di base",
     baseDefaultLabel: "(predefinito)",
@@ -526,11 +521,10 @@ const translations = {
     orderWhatsapp: "ORDER ON WHATSAPP",
     callUs: "CALL US",
     orderingClosed: "ONLINE ORDERS AVAILABLE FROM 9:00 AM TO 7:00 PM",
-    cartPhoneNotice: "From 7:00 PM to midnight, the Send to WhatsApp feature is disabled.",
+    cartPhoneNotice: "For orders today, from 7:00 PM to midnight you can order by phone only.",
     bookingEyebrow: "CLICK TO BOOK A TABLE",
     bookingTitle: "Booking request",
     bookingIntro: "Enter your details: your request will be sent on WhatsApp and confirmed by the restaurant.",
-    bookingPhone: "Phone",
     bookingDate: "Date",
     bookingDateRequired: "Please select a booking date.",
     bookingTime: "Time",
@@ -540,9 +534,6 @@ const translations = {
     bookingHeading: "BOOKING REQUEST - LA PERGOLA",
     bookingSent: "Awaiting confirmation from the restaurant.",
     bookingClosedDate: "We are closed on this date. Please choose another day.",
-    bookingPhoneEyebrow: "PHONE BOOKINGS",
-    bookingPhoneTitle: "To book a table today after 7:00 PM, please call the restaurant.",
-    closeDialog: "CLOSE",
     cartDisclaimer: "Your order will be prepared as a WhatsApp message. It will not be sent automatically: you will need to confirm it.",
     footerTagline: "Pizzeria • Tradition • Passion",
     addToCart: "+ ADD TO CART",
@@ -551,6 +542,7 @@ const translations = {
     recommendationEyebrow: "A LITTLE SUGGESTION FOR YOUR ORDER",
     recommendationTitle: "Would you like to add a drink?",
     recommendationText: "Add one or more soft drinks or beers to your order, then continue to WhatsApp.",
+    backToCart: "BACK TO CART",
     addRecommendation: "ADD",
     addAnotherRecommendation: "ADD ANOTHER",
     recommendationQuantity: "In your order: {count}",
@@ -571,8 +563,8 @@ const translations = {
     extrasLabel: "Extras",
     doughLabel: "Dough type",
     doughClassic: "Classic dough",
-    doughCereals: "Multigrain dough",
-    doughWholemeal: "Wholemeal dough",
+    doughCereals: "Multigrain dough (if available)",
+    doughWholemeal: "Wholemeal dough (if available)",
     doughDouble: "Double dough",
     baseLabel: "Base type",
     baseDefaultLabel: "(default)",
@@ -637,17 +629,17 @@ const englishMenu = {
   23:["Vegetarian","Tomato, mozzarella, mushrooms, artichokes, capers, peppers, aubergine, black olives and oregano"],
   24:["Sausage and Friarielli","Tomato, mozzarella, fresh sausage, friarielli (broccoli rabe) and oregano"],
   25:["Sausage and Porcini","Tomato, mozzarella, fresh sausage, porcini mushrooms and oregano"],
-  26:["Scattarisciata","Wholemeal dough, sautéed tomatoes with onion, olives, capers, stracciatella and rocket"],
+  26:["Scattarisciata","Wholemeal dough (if available), sautéed tomatoes with onion, olives, capers, stracciatella and rocket"],
   27:["Nerano","Courgette purée, mozzarella, smoked provola, grated courgette and basil"],
   28:["Campana","Buffalo mozzarella, fresh sausage and friarielli (broccoli rabe)"],
-  29:["Rustica","Multigrain dough, mozzarella, friarielli, sun-dried tomato, black olives and crumbled tarallo"],
-  30:["Delicata","Wholemeal dough, mozzarella, Gorgonzola, pears, honey and walnuts"],
+  29:["Rustica","Multigrain dough (if available), mozzarella, friarielli, sun-dried tomato, black olives and crumbled tarallo"],
+  30:["Delicata","Wholemeal dough (if available), mozzarella, Gorgonzola, pears, honey and walnuts"],
   31:["Calabrese","Tomato, buffalo mozzarella, ventricina salami, caramelised onion and basil"],
   32:["Calabrese 2.0","Mozzarella, 'nduja, smoked provola, caramelised onion and basil"],
   33:["Pistacchiona","Buffalo mozzarella, mortadella and pistachio pesto"],
-  34:["Lu Sule","Multigrain dough, mozzarella, pancetta, stracciatella, yellow datterini tomatoes and basil"],
-  35:["Lu Mare","Wholemeal dough, tomato, mozzarella, squid, prawns and lemon zest"],
-  36:["Lu Ientu","Multigrain dough, tomato, mozzarella, capocollo, smoked burratina, sun-dried tomatoes and mint"],
+  34:["Lu Sule","Multigrain dough (if available), mozzarella, pancetta, stracciatella, yellow datterini tomatoes and basil"],
+  35:["Lu Mare","Wholemeal dough (if available), tomato, mozzarella, squid, prawns and lemon zest"],
+  36:["Lu Ientu","Multigrain dough (if available), tomato, mozzarella, capocollo, smoked burratina, sun-dried tomatoes and mint"],
   37:["Disco","Double dough, tomato, mozzarella, mushrooms, ham, capers and tuna"],
   38:["Classic Puccia","Cooked ham, Galbanino cheese and lettuce"],
   100:["Build your own puccia","Choose the ingredients you like"],
@@ -783,13 +775,6 @@ document.getElementById("booking-time-slots").addEventListener("click", event =>
   if (!slot) return;
   bookingTimeInput.value = slot.dataset.bookingTime;
   renderBookingTimes();
-  if (bookingRequiresPhone(bookingDateInput.value, bookingTimeInput.value)) {
-    document.getElementById("booking-phone-dialog").showModal();
-  }
-});
-
-document.getElementById("close-booking-phone").addEventListener("click", () => {
-  document.getElementById("booking-phone-dialog").close();
 });
 
 function dateOptionLabel(date) {
@@ -925,7 +910,7 @@ document.querySelectorAll("[data-calendar-picker]").forEach(picker => {
       calendarMonths[kind] = new Date(selected.getFullYear(), selected.getMonth(), 1, 12);
       renderCalendar(kind);
     }
-    if (input === bookingDateInput) updateOrderingAvailability();
+    updateOrderingAvailability();
   });
 });
 
@@ -1441,11 +1426,6 @@ function sendOrderToWhatsApp() {
 
 document.getElementById("order-form").addEventListener("submit", function(event) {
   event.preventDefault();
-  if (!isWhatsAppOrderingOpen()) {
-    updateOrderingAvailability();
-    return;
-  }
-
   if (Object.keys(cart).length === 0) {
     alert(t("emptyCartAlert"));
     return;
@@ -1454,6 +1434,11 @@ document.getElementById("order-form").addEventListener("submit", function(event)
   const customerName = document.getElementById("customer-name").value.trim();
   if (!customerName || !pickupDateInput.value || !pickupTimeInput.value) {
     alert(t("nameDateTimeAlert"));
+    return;
+  }
+
+  if (!isWhatsAppOrderingOpen()) {
+    updateOrderingAvailability();
     return;
   }
 
@@ -1476,8 +1461,7 @@ document.getElementById("booking-form").addEventListener("submit", function(even
     alert(t("bookingTimeRequired"));
     return;
   }
-  if (bookingRequiresPhone(date, time)) {
-    document.getElementById("booking-phone-dialog").showModal();
+  if (bookingRequiresPhone(date)) {
     return;
   }
   const chosenDate = new Date(`${date}T12:00:00`);
@@ -1502,9 +1486,16 @@ document.getElementById("continue-whatsapp").addEventListener("click", () => {
   completeOrder();
 });
 
+function returnToCart() {
+  recommendationDialog.close();
+  document.getElementById("cart").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+document.getElementById("back-to-cart").addEventListener("click", returnToCart);
+
 recommendationDialog.addEventListener("cancel", event => {
   event.preventDefault();
-  completeOrder();
+  returnToCart();
 });
 
 function applyLanguage() {
@@ -1545,19 +1536,23 @@ function applyLanguage() {
 
 function updateOrderingAvailability() {
   const availability = getContactAvailability();
-  const orderingOpen = availability.whatsapp;
-  const callAvailable = availability.phone;
+  const pickupDate = pickupDateInput.value;
+  const orderingOpen = isWhatsAppOrderingOpen(pickupDate);
+  const callAvailable = pickupDate === availability.businessDate && availability.phone;
   document.getElementById("cart-items").hidden = false;
   document.querySelector(".cart-total").hidden = false;
   document.querySelector(".cart-panel h2").hidden = false;
   document.querySelector(".cart-panel > .eyebrow").hidden = false;
   document.querySelector(".cart-menu-link").hidden = false;
   document.querySelector(".cart-disclaimer").hidden = !orderingOpen;
-  document.getElementById("order-form").hidden = !orderingOpen;
+  document.getElementById("order-form").hidden = false;
+  document.getElementById("order-whatsapp").hidden = !orderingOpen;
   document.getElementById("call-us").hidden = !callAvailable;
   document.getElementById("cart-phone-notice").hidden = !callAvailable;
   document.getElementById("booking-form").hidden = false;
-  document.getElementById("booking-call").hidden = true;
+  const bookingPhoneOnly = bookingRequiresPhone(bookingDateInput.value, availability);
+  document.getElementById("booking-whatsapp").hidden = bookingPhoneOnly;
+  document.getElementById("booking-call").hidden = !bookingPhoneOnly;
   document.querySelectorAll(".add-button").forEach(button => {
     button.disabled = false;
   });
