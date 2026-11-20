@@ -828,6 +828,11 @@ function italianPublicHolidays(year) {
   return new Set(dates);
 }
 
+function isSpecialOpen(date) {
+  // Availability is confirmed by the restaurant after the request is sent.
+  return true;
+}
+
 const calendarMonths = {
   booking: new Date(new Date().getFullYear(), new Date().getMonth(), 1, 12),
   pickup: new Date(new Date().getFullYear(), new Date().getMonth(), 1, 12)
@@ -1458,11 +1463,6 @@ document.getElementById("order-form").addEventListener("submit", function(event)
 
 document.getElementById("booking-form").addEventListener("submit", function(event) {
   event.preventDefault();
-  if (bookingRequiresPhone(bookingDateInput.value, bookingTimeInput.value)) {
-    document.getElementById("booking-phone-dialog").showModal();
-    return;
-  }
-
   const name = document.getElementById("booking-name").value.trim();
   const date = bookingDateInput.value;
   const time = bookingTimeInput.value;
@@ -1474,6 +1474,10 @@ document.getElementById("booking-form").addEventListener("submit", function(even
   }
   if (!time) {
     alert(t("bookingTimeRequired"));
+    return;
+  }
+  if (bookingRequiresPhone(date, time)) {
+    document.getElementById("booking-phone-dialog").showModal();
     return;
   }
   const chosenDate = new Date(`${date}T12:00:00`);
